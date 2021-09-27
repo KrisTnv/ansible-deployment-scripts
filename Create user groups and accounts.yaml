@@ -19,7 +19,6 @@
  #     createhome: yes        # Defaults to yes
  #     home: /home/kris        # Defaults to /home/<username>
 
-
  #  - name: Remove user "kris" from remote server
  #    ansible.builtin.user:
  #     name: kris
