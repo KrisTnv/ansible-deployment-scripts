@@ -1,0 +1,17 @@
+---
+ - hosts: serverhost
+   connection: ssh
+   become: yes
+   become_method: sudo
+   gather_facts: no
+
+   tasks:
+
+   - name: Ensure kris is absent
+     community.general.ipa_user:
+       validate_certs: no
+       name: kris
+       state: absent
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
