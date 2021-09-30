@@ -1,4 +1,4 @@
- This is the default ansible 'hosts' file.
+# This is the default ansible 'hosts' file.
 #
 # It should live in /etc/ansible/hosts
 #
