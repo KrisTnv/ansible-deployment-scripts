@@ -23,6 +23,7 @@
        state: present
        givenname: kris
        sn: tanev
+       password: kris
        mail:
        - kris@tanev.com
        telephonenumber:
