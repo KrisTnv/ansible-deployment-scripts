@@ -1,0 +1,19 @@
+---
+ - hosts: serverhost
+   connection: ssh
+   become: yes
+   become_method: sudo
+   gather_facts: no
+
+   tasks:
+
+   - name: Ensure that users admin and sysadmin are assigned to the group, but no other user
+     community.general.ipa_group:
+       validate_certs: no
+       name: trust admins
+       user:
+       - admin
+       - sysadmin
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
