@@ -16,7 +16,7 @@
 #       ipa_user: admin
 #       ipa_pass: RuZ5AWiu1
 
-   - name: Ensure kris is present and always reset password
+   - name: Ensure kris is present
      community.general.ipa_user:
        validate_certs: no
        name: kris
