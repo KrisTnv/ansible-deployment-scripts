@@ -1,0 +1,27 @@
+---
+ - hosts: serverhost
+   connection: ssh
+   become: yes
+   become_method: sudo
+   gather_facts: no
+
+   tasks:
+   - ipa_role:
+       validate_certs: no
+       name: Enrollment Administrator
+       user:
+       - Bob
+       description: Enrollment Administrators
+       group:
+       - admins
+       host:
+       - ipaserver.example.com
+       hostgroup:
+       - editors
+       privilege:
+       - Group Administrators
+       service:
+       - HTTP/ipaserver.example.com@EXAMPLE.COM
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
