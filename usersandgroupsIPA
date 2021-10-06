@@ -1,0 +1,70 @@
+--
+ - hosts: serverhost
+   connection: ssh
+   become: yes
+   become_method: sudo
+   gather_facts: no
+
+   tasks:
+
+   - name: Ensure wheel group is present
+     community.general.ipa_group:
+#      ipa_prot: https
+       validate_certs: no
+       name: wheel
+       description: Users with sudo privileges
+       gidnumber: '54321'
+       state: present
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
+
+   - name: Allow 'wheel' group to have passwordless sudo
+     lineinfile:
+       dest: /etc/sudoers
+       state: present
+       regexp: '^%wheel'
+       line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+       validate: 'visudo -cf %s'
+
+   - name: Ensure Bob is present
+     community.general.ipa_user:
+       validate_certs: no
+       name: Bob
+       state: present
+       givenname: Bob
+       sn: Bob
+       password: krisVML12
+       mail:
+       - bob@ipa.com
+       telephonenumber:
+       - '+555123456'
+       sshpubkey:
+#       - ssh-rsa ....
+#       - ssh-dsa ....
+       uidnumber: '10000'
+       gidnumber: '10001'
+       homedirectory: /home/Bob
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
+
+   - name: Ensure that user Bob is assigned to the group, but no other user
+     community.general.ipa_group:
+       validate_certs: no
+       name: wheel
+       user:
+       - Bob
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
+
+   - name: Set up authorized keys for the Bob user
+     authorized_key: user=Bob key="{{item}}"
+     with_file:
+       - /home/kristiyanhost/.ssh/id_rsa.pub
+
+#    - name: Add Bob user to the sudoers
+#     copy:
+#          dest: "/etc/sudoers.d/Bob"
+#          content: "Bob  ALL=(ALL)  NOPASSWD: ALL"
