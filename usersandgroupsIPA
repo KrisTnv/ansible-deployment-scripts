@@ -1,4 +1,4 @@
---
+---
  - hosts: serverhost
    connection: ssh
    become: yes
@@ -7,64 +7,131 @@
 
    tasks:
 
-   - name: Ensure wheel group is present
+   - name: Ensure admins group is present
      community.general.ipa_group:
 #      ipa_prot: https
        validate_certs: no
-       name: wheel
-       description: Users with sudo privileges
-       gidnumber: '54321'
+       name: admins
+       description: Account administrators
+       gidnumber: '1749000000'
        state: present
        ipa_host: ipaserver.example.com
        ipa_user: admin
        ipa_pass: RuZ5AWiu1
 
-   - name: Allow 'wheel' group to have passwordless sudo
+   - name: Ensure contractors group is present
+     community.general.ipa_group:
+#      ipa_prot: https
+       validate_certs: no
+       name: contractors
+       description: Contractors working on-site
+       gidnumber: '1749000001'
+       state: present
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
+
+   - name: Allow 'admins' group to have passwordless sudo
      lineinfile:
        dest: /etc/sudoers
        state: present
-       regexp: '^%wheel'
-       line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+       regexp: '^%admins'
+       line: '%admins ALL=(ALL) NOPASSWD: ALL'
        validate: 'visudo -cf %s'
 
-   - name: Ensure Bob is present
+   - name: Ensure role contractors is present.
+     community.general.ipa_role:
+       privilege:
+       - Delegation Administrator
+       service:
+       - HTTP/ipaserver.example.com@EXAMPLE.COM
+       - dogtag/ipaserver.example.com@EXAMPLE.COM
+       - ldap/ipaserver.example.com@EXAMPLE.COM
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
+       name: contractors
+       description: Contractors working on site.
+
+   - name: Ensure HPCsysadmin is present
      community.general.ipa_user:
        validate_certs: no
-       name: Bob
+       name: HPCsysadmin
        state: present
-       givenname: Bob
-       sn: Bob
-       password: krisVML12
+       givenname: HPCsysadmin
+       sn: sysadmin
+#       password: RuZ5AWiu1
        mail:
-       - bob@ipa.com
+       - HPCsysadmin@ipa.com
        telephonenumber:
        - '+555123456'
        sshpubkey:
 #       - ssh-rsa ....
 #       - ssh-dsa ....
-       uidnumber: '10000'
-       gidnumber: '10001'
-       homedirectory: /home/Bob
+       uidnumber: '1749000000'
+       gidnumber: '1749000000'
+       homedirectory: /home/HPCsysadmin
        ipa_host: ipaserver.example.com
        ipa_user: admin
        ipa_pass: RuZ5AWiu1
 
-   - name: Ensure that user Bob is assigned to the group, but no other user
+   - name: Ensure that user HPCsysadmin is assigned to the admin group
      community.general.ipa_group:
        validate_certs: no
-       name: wheel
+       name: admins
        user:
-       - Bob
+       - admin
+       - HPCsysadmin
        ipa_host: ipaserver.example.com
        ipa_user: admin
        ipa_pass: RuZ5AWiu1
 
-   - name: Set up authorized keys for the Bob user
-     authorized_key: user=Bob key="{{item}}"
-     with_file:
-       - /home/kristiyanhost/.ssh/id_rsa.pub
+   - name: Add HPCsysadmin to the contractors role
+     community.general.ipa_role:
+       name: contractors
+       user:
+       - HPCsysadmin
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
 
-#    - name: Add Bob user to the sudoers
+#   - name: Set up authorized keys for the HPCsysadmin user
+#     authorized_key: 
+#        user: HPCsysadmin 
+#        key: "{{ lookup('file', '/home/HPCsysadmin/.ssh/id_rsa.pub') }}"
+
+#   - name: Add Bob user to the sudoers
 #     copy:
 #          dest: "/etc/sudoers.d/Bob"
 #          content: "Bob  ALL=(ALL)  NOPASSWD: ALL"
+
+   - name: Add host to the contractors role.
+     community.general.ipa_role:
+       name: contractors
+       host:
+       - ipaserver.example.com
+       state: present
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
+
+   - name: Add group contractors to the contractor role.
+     community.general.ipa_role:
+       name: contractors
+       group: contractors
+       state: present
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
+
+   - name: Add hostgroup ipaserver to the contractors role.
+     community.general.ipa_role:
+       name: contractors
+       hostgroup:
+       - ipaservers
+       state: present
+       ipa_host: ipaserver.example.com
+       ipa_user: admin
+       ipa_pass: RuZ5AWiu1
+
+       
