@@ -1,0 +1,148 @@
+---
+ - hosts: server1
+   connection: ssh
+   become: yes
+   become_method: sudo
+   gather_facts: no
+   tasks:
+
+ #                                         ~~ EXAMPLES ~~ 
+ #  - name: 'Create a login user'
+ #    user:
+ #     name: kris
+ #     password: '$6$hOzK81NKhQiW$JTx/aucL5pdRi9f6k.96bdA4JH51uAd9mxCi3aDwp0BR3Sk3NjyVZ59tnFR/81j.ocO9C9q8uzQYBPq6tYZqy1'
+ #     groups: # Empty by default, here we give it some groups
+ #     - developers     
+ #     state: present
+ #     shell: /bin/bash       # Defaults to /bin/bash
+ #     system: no             # Defaults to no
+ #     createhome: yes        # Defaults to yes
+ #     home: /home/kris        # Defaults to /home/<username>
+
+ #  - name: Remove user "kris" from remote server
+ #    ansible.builtin.user:
+ #     name: kris
+ #     state: absent
+ #     remove: yes
+
+    - name: Add group "sysadmins" to remote server
+      group:
+       name: sysadmins
+       gid: 2010
+       state: present
+
+    - name: Add group "office" to remote server
+      group:
+       name: office
+       gid: 2011
+       state: present
+
+       - name: Add group "contractors" to remote server
+      group:
+       name: contractors
+       gid: 2012
+       state: present
+
+                                            #Adding users
+
+    - name: Add user "sysadmin" to remote server
+      user:
+       name: sysadmin
+       password: '$6$EqOY4CHriUKwB91$fBRu0PccWkoGKikOUhCDWmUjeJSITazITMBDa0tVn5TyVP3HCGnIwcpDzgvcYqh0wsRfXFnwhLPabFEvtAhmv.'
+       comment: "Privileged User"
+       uid: 2001
+       group: sysadmins
+       groups: office,contractors
+       append: yes
+       state: present
+       shell: /bin/bash
+       system: no
+       createhome: yes
+       home: /home/sysadmin
+       generate_ssh_key: yes
+       ssh_key_bits: 2048
+       ssh_key_file: .ssh/id_rsa
+
+    - name: Add user "Bob" to remote server
+      user:
+       name: bob
+       password: '$6$a9.z4jytvK$YtrNW8aT6y1s8EXZRNkaj8juiUPAlFuLRoacaZXempJrLPHW.RGuNYc9UVs30mRLUkesKKjxcDn1KpY9mbBen1'
+       comment: "UNPrivileged User"
+       uid: 2002
+       group: office
+       state: present
+       shell: /bin/bash
+       system: no
+       createhome: yes
+       home: /home/bob
+       generate_ssh_key: yes
+       ssh_key_bits: 2048
+       ssh_key_file: .ssh/id_rsa
+
+- name: Add user "kris" to remote server
+      user:
+       name: kris
+       password: '$6$prUYxkyR87QB$Fcqc9ac5lfbxpaDdAEVWDqyZgnXVtXA7FLBudtc6Z6hpDckdr4bVM0af7wyNc8edG5TD1/3K3gxRQjTL3VaID0'
+       comment: "UNPrivileged User"
+       uid: 2003
+       group: office
+       state: present
+       shell: /bin/bash
+       system: no
+       createhome: yes
+       home: /home/kris
+       generate_ssh_key: yes
+       ssh_key_bits: 2048
+       ssh_key_file: .ssh/id_rsa
+
+    - name: Add user "Guest001" to remote server
+      user:
+       name: guest001
+       comment: "Temp account"
+       uid: 2004
+       group: contractors
+       state: present
+       shell: /bin/bash
+       system: yes
+       createhome: no
+       password: ''
+       expires: 1663847966
+       #EPOCH Format
+
+
+  GNU nano 4.8                                                                       createusers.yaml                                                                                 
+---
+ - hosts: serverhost
+   connection: ssh
+   become: yes
+   become_method: sudo
+   gather_facts: no
+
+   vars:
+    password: kiko
+
+   tasks:
+
+   - name: Add user "kiko" to remote server
+     user:
+      name: kiko
+      password: "{{ password | password_hash('sha512') }}"
+      comment: "Privileged User"
+      uid: 2001
+      group: sysadmins
+      groups: office,contractors
+      append: yes
+      state: present
+      shell: /bin/bash
+      system: no
+      createhome: yes
+      home: /home/kiko
+      generate_ssh_key: yes
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa
+
+   - name: Add kiko user to the sudoers
+     copy:
+         dest: "/etc/sudoers.d/kiko"
+         content: "kiko  ALL=(ALL)  NOPASSWD: ALL"
+
