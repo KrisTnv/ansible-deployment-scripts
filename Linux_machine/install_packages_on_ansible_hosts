@@ -28,10 +28,12 @@
     #when: ansible_distribution in ["Debian", "Ubuntu"]
                      
                      #AnyOS
-  - name: Update cache and install apache2 and php
+  - name: Update cache and install apache2 and php for any OS
     package:
       name:
-        - "{{ apache_package }}"
-        - "{{ php_package }}"
+        - "{{ apache_package }}" #Declared in /etc/ansible/hosts
+        - "{{ php_package }}"    #Declared in /etc/ansible/hosts
       state: latest
       update_cache: yes
+
+  #--------------------------------------------------------------------------------------------------------
