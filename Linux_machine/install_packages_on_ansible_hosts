@@ -26,7 +26,7 @@
       update_cache: yes
     when: ansible_distribution == "CentOS"
     #when: ansible_distribution in ["Debian", "Ubuntu"]
-                     
+ #---------------------------------------------------------------------------                    
                      #AnyOS
   - name: Update cache and install apache2 and php for any OS
     package:
@@ -36,4 +36,6 @@
       state: latest
       update_cache: yes
 
-  #--------------------------------------------------------------------------------------------------------
+  #-------------------------------------------------------------------------- 
+    
+    
