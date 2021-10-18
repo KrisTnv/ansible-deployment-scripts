@@ -6,12 +6,14 @@
   pre_tasks:
 
   - name: Install updates (CentOS)
+    tags: always
     dnf:
       update_only: yes
       update_cache: yes
     when: ansible_distribution == "CentOS"
 
   - name: Install updates (Ubuntu)
+    tags: always
     apt:
       upgrade: dist
       update_cache: yes
@@ -23,6 +25,7 @@
   tasks:
                      #Ubuntu
   - name: Install apache2 and php packages for Ubuntu
+    tags: apache,apache2,ubuntu
     apt:
       name:
         - apache2
@@ -33,6 +36,7 @@
 
                     #CentOS 
   - name: Install apache and php packages for CentOS
+    tags: apache,centos,httpd
     dnf:
       name:
         - httpd
@@ -41,25 +45,28 @@
     when: ansible_distribution == "CentOS"
     #when: ansible_distribution in ["Debian", "Ubuntu"]
 
-
-
 - hosts: dbservers
   become: true
   tasks:
 
   - name: Install mariadb package (CentOS)
+    tags: centos,db,mariadb
     dnf:
       name: mariadb
       state: latest
     when: ansible_distribution == "CentOS"
 
   - name: Install mariadb package (Ubuntu)
+    tags: db,mariadb,ubuntu
     apt:
       name: mariadb-server
       state: latest
     when: ansible_distribution == "Ubuntu"
 
+
+
 - hosts: fileservers
+  tags: samba
   become: true
   tasks:
 
@@ -67,4 +74,3 @@
     package:
       name: samba
       state: latest
-
