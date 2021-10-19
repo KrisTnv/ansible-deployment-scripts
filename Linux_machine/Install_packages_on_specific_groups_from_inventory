@@ -3,25 +3,43 @@
 - hosts: all
   become: true
   #Tasks run before anything else in the playbook (No different than normal tasks: !)
-  pre_tasks:
-
+  pre_tasks: 
+  
   - name: Install updates (CentOS)
     tags: always
-    dnf:
+    dnf: 
       update_only: yes
       update_cache: yes
     when: ansible_distribution == "CentOS"
-
+ 
   - name: Install updates (Ubuntu)
     tags: always
-    apt:
+    apt: 
       upgrade: dist
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
 
 
-- hosts: webservers
+- hosts: workstations
   become: true
+  tasks: 
+
+  - name: install unzip 
+    package: 
+      name: unzip
+
+  - name: install terraform
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/1.0.9/terraform_1.0.9_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+
+
+- hosts: webservers
+  become: true 
   tasks:
                      #Ubuntu
   - name: Install apache2 and php packages for Ubuntu
@@ -44,7 +62,7 @@
       state: latest
     when: ansible_distribution == "CentOS"
     #when: ansible_distribution in ["Debian", "Ubuntu"]
-  
+
   - name: copy default html file for site
     tags: apache,apache2,httpd
     copy:
@@ -54,20 +72,21 @@
       group: root
       mode: 0644
 
-- hosts: dbservers
-  become: true
-  tasks:
 
+- hosts: dbservers
+  become: true 
+  tasks: 
+ 
   - name: Install mariadb package (CentOS)
     tags: centos,db,mariadb
-    dnf:
+    dnf: 
       name: mariadb
       state: latest
     when: ansible_distribution == "CentOS"
 
   - name: Install mariadb package (Ubuntu)
-    tags: db,mariadb,ubuntu
-    apt:
+    tags: db,mariadb,ubuntu 
+    apt: 
       name: mariadb-server
       state: latest
     when: ansible_distribution == "Ubuntu"
