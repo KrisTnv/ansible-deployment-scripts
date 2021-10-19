@@ -1,0 +1,138 @@
+---
+
+- hosts: all
+  become: true
+  #Tasks run before anything else in the playbook (No different than normal tasks: !)
+  pre_tasks: 
+  
+  - name: Update repo cache (CentOS)
+    tags: always
+    dnf: 
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+ 
+  - name: Update repo cache (Ubuntu)
+    tags: always
+    apt: 
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks: 
+
+  - name: add ssh key for hpc
+    tags: always
+    authorized_key: 
+      user: hpc
+      key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC3EItqR6d/8YAU211VzswmAPaAqTL57doRFzc9CDf1L6L7+MZYmgedmEwXYIGHFmtpafWzLkdVHLRqtO5TgRVeXhc7opefwWYcwgmOb8RXwMICJ1O0CRhZW8KF3iUhTH5e/Zbi+LSgYVztsHoDY2zEtxuHyNlbQL0gx9XrSVjj8lJkHQ+BpEqcWKd5UXmg3s+SYb2fKlwHozTSgj/BblwmdneIykURqPr6uLz9GnAXLIoynGKJygKwhdHqbana/KYBadLbD/em8nHaravtLAoWslkFXUT2S2r/tuBjZ8EqyaDG0wcw2mPa2lvpPNbjBHI6OljbTCxHQU/HUHFn3BHFCaS2Ou3EOTe3JDhKcHHorg2yUSYfjg0ZLl86FkQllxt+aMtfCf+ViKqbJj+ZYt4Eau0CFDxZDHoLVQa/HFLWW2bdvdnllyT3uyezRS8SfjmQOikr2pwjefC9gBARGxL5BRL/OIfTjvGVPg6c6WkYXG6hMq4PMZkNl47oAcqpDPs= kristiyanslave@kristiyanslave-VirtualBox"      
+
+- hosts: workstations
+  become: true
+  tasks: 
+
+  - name: install unzip 
+    package: 
+      name: unzip
+
+  - name: install terraform
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/1.0.9/terraform_1.0.9_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+
+
+- hosts: webservers
+  become: true 
+  tasks:
+                     #Ubuntu
+  - name: Install apache2 and php packages for Ubuntu
+    tags: apache,apache2,ubuntu
+    apt:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+    #when: ansible_distribution in ["Debian", "Ubuntu"]
+
+                    #CentOS 
+  - name: Install apache and php packages for CentOS
+    tags: apache,centos,httpd
+    dnf:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "CentOS"
+    #when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: Start httpd (CentOS) 
+    #starts services on CentOS systems that are not automatically started when installed
+    tags: apache,centos,httpd
+    service: 
+      name: httpd
+      state: started
+      enabled: yes
+    when: ansible_distribution == "CentOS"
+
+
+  - name: change e-mail address for admin
+    tags: apache,centos,httpd
+    lineinfile: 
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line: ServerAdmin somebody@somewhere.net
+    when: ansible_distribution == "CentOS"
+    register: httpd 
+
+  - name: restart httpd (CentOS) 
+    tags: apache,centos,httpd
+    service: 
+      name: httpd
+      state: restarted
+    when: httpd.changed
+
+  - name: copy default html file for site
+    tags: apache,apache2,httpd
+    copy:
+      src: /home/kristiyanslave/Ansible-scripts/files/default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+
+
+- hosts: dbservers
+  become: true 
+  tasks: 
+ 
+  - name: Install mariadb package (CentOS)
+    tags: centos,db,mariadb
+    dnf: 
+      name: mariadb
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+  - name: Install mariadb package (Ubuntu)
+    tags: db,mariadb,ubuntu 
+    apt: 
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+
+
+- hosts: fileservers
+  tags: samba
+  become: true
+  tasks:
+
+  - name: Install samba package
+    tags: samba
+    package:
+      name: samba
+      state: latest
