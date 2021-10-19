@@ -10,3 +10,6 @@
 [defaults]
 inventory = hosts
 #private_key_file = ~/.ssh/ansible 
+
+#Run playbooks without become password
+remote_user = root/hpc
