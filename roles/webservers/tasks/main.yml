@@ -49,7 +49,7 @@
 - name: copy default html file for site
   tags: apache,apache2,httpd
   copy:
-    src: /home/kristiyanslave/Ansible-scripts/files/default_site.html
+    src: /home/kristiyanslave/playbooks/linuxmachine/roles/webservers/files/default_site.html
     dest: /var/www/html/index.html
     owner: root
     group: root
