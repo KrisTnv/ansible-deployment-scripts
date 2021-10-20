@@ -28,17 +28,17 @@
    roles:
      - workstations
  
- - hosts: web_servers
+ - hosts: webservers
    become: true
    roles:
-     - web_servers
+     - webservers
  
- - hosts: db_servers
+ - hosts: dbservers
    become: true
    roles:
-     - db_servers
+     - dbservers
  
- - hosts: file_servers
+ - hosts: fileservers
    become: true
    roles:
-     - file_servers
+     - fileservers
