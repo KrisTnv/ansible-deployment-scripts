@@ -1,55 +1,39 @@
-                  #Ubuntu
-- name: Install apache2 and php packages for Ubuntu
-  tags: apache,apache2,ubuntu
-  apt:
+- name: install apache and php packages
+  tags: apache,httpd,php
+  package:
     name:
-      - apache2
-      - libapache2-mod-php
+      - "{{ apache_package_name }}"
+      - "{{ php_package_name }}"
     state: latest
-  when: ansible_distribution == "Ubuntu"
-  #when: ansible_distribution in ["Debian", "Ubuntu"]
 
-                    #CentOS 
-- name: Install apache and php packages for CentOS
-  tags: apache,centos,httpd
-  dnf:
-    name:
-      - httpd
-      - php
-    state: latest
-  when: ansible_distribution == "CentOS"
-  #when: ansible_distribution in ["Debian", "Ubuntu"]
-
-- name: Start httpd (CentOS) 
-  #starts services on CentOS systems that are not automatically started when installed
-  tags: apache,centos,httpd
-  service: 
-    name: httpd
+- name: start and enable apache service
+  tags: apache,httpd
+  service:
+    name: "{{ apache_service }}"
     state: started
     enabled: yes
-  when: ansible_distribution == "CentOS"
-
 
 - name: change e-mail address for admin
   tags: apache,centos,httpd
-  lineinfile: 
+  lineinfile:
     path: /etc/httpd/conf/httpd.conf
     regexp: '^ServerAdmin'
     line: ServerAdmin somebody@somewhere.net
   when: ansible_distribution == "CentOS"
-  register: httpd 
+  # notify: restart_apache
+  register: apache
 
-- name: restart httpd (CentOS) 
-  tags: apache,centos,httpd
-  service: 
-    name: httpd
+- name: restart httpd
+  tags: apache,httpd
+  service:
+    name: "{{ apache_service }}"
     state: restarted
-  when: httpd.changed
+  when: apache.changed
 
 - name: copy default html file for site
   tags: apache,apache2,httpd
   copy:
-    src: /home/kristiyanslave/playbooks/linuxmachine/roles/webservers/files/default_site.html
+    src: default_site.html
     dest: /var/www/html/index.html
     owner: root
     group: root
