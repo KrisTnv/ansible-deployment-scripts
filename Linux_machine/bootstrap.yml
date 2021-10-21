@@ -5,12 +5,12 @@
   #Tasks run before anything else in the playbook (No different than normal tasks: !)
   pre_tasks:
 
-  - name: Install updates (CentOS)
+  - name: Install updates (RHEL)
     tags: always
     dnf:
       update_only: yes
       update_cache: yes
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution == "RedHat"
 
   - name: Install updates (Ubuntu)
     tags: always

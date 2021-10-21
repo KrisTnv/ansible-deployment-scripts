@@ -14,12 +14,12 @@
     enabled: yes
 
 - name: change e-mail address for admin
-  tags: apache,centos,httpd
+  tags: apache,redhat,httpd
   lineinfile:
     path: /etc/httpd/conf/httpd.conf
     regexp: '^ServerAdmin'
     line: ServerAdmin somebody@somewhere.net
-  when: ansible_distribution == "CentOS"
+  when: ansible_distribution == "RedHat"
   # notify: restart_apache
   register: apache
 

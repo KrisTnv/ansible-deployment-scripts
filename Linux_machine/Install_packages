@@ -4,12 +4,12 @@
    become: true
    pre_tasks:
  
-   - name: update repository index (CentOS)
+   - name: update repository index (RHEL)
      tags: always
      dnf:
        update_cache: yes
      changed_when: false
-     when: ansible_distribution == "CentOS"
+     when: ansible_distribution == "RedHat"
  
    - name: update repository index (Ubuntu)
      tags: always
