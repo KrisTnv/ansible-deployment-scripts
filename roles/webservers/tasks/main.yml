@@ -20,8 +20,8 @@
     regexp: '^ServerAdmin'
     line: ServerAdmin somebody@somewhere.net
   when: ansible_distribution == "RedHat"
-  # notify: restart_apache
-  register: apache
+  notify: restart_apache
+  #register: apache
 
 - name: restart httpd
   tags: apache,httpd
