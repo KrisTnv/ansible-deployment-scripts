@@ -2,3 +2,14 @@
   authorized_key: 
     user: hpc
     key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC3EItqR6d/8YAU211VzswmAPaAqTL57doRFzc9CDf1L6L7+MZYmgedmEwXYIGHFmtpafWzLkdVHLRqtO5TgRVeXhc7opefwWYcwgmOb8RXwMICJ1O0CRhZW8KF3iUhTH5e/Zbi+LSgYVztsHoDY2zEtxuHyNlbQL0gx9XrSVjj8lJkHQ+BpEqcWKd5UXmg3s+SYb2fKlwHozTSgj/BblwmdneIykURqPr6uLz9GnAXLIoynGKJygKwhdHqbana/KYBadLbD/em8nHaravtLAoWslkFXUT2S2r/tuBjZ8EqyaDG0wcw2mPa2lvpPNbjBHI6OljbTCxHQU/HUHFn3BHFCaS2Ou3EOTe3JDhKcHHorg2yUSYfjg0ZLl86FkQllxt+aMtfCf+ViKqbJj+ZYt4Eau0CFDxZDHoLVQa/HFLWW2bdvdnllyT3uyezRS8SfjmQOikr2pwjefC9gBARGxL5BRL/OIfTjvGVPg6c6WkYXG6hMq4PMZkNl47oAcqpDPs= kristiyanslave@kristiyanslave-VirtualBox"
+
+- name: generate sshd_config file from template
+  tags: ssh
+  template:
+    src: "{{ ssh_template_file }}"
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_sshd
+
