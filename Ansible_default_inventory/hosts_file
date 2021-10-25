@@ -19,20 +19,20 @@
 
 [webservers]
 serverhost ansible_host=kristiyanhost@129.215.1.181
- serverhost2 ansible_host=kristiyan-redhat@129.215.1.179
+serverhost2 ansible_host=kristiyan-redhat@129.215.1.182
 #ipaserver  ansible_host=freeipa-server@172.17.0.2
 
 [dbservers]
 serverhost ansible_host=kristiyanhost@129.215.1.181
-serverhost2 ansible_host=kristiyan-redhat@129.215.1.179
+serverhost2 ansible_host=kristiyan-redhat@129.215.1.182
 
 [fileservers]
 serverhost ansible_host=kristiyanhost@129.215.1.181
-serverhost2 ansible_host=kristiyan-redhat@129.215.1.179
+serverhost2 ansible_host=kristiyan-redhat@129.215.1.182
 
 [workstations]
 serverhost ansible_host=kristiyanhost@129.215.1.181
-serverhost2 ansible_host=kristiyan-redhat@129.215.1.179
+serverhost2 ansible_host=kristiyan-redhat@129.215.1.182
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
