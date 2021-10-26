@@ -16,15 +16,15 @@
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
 
-                   #CentOS 
-  - name: Update cache and install apache and php packages for CentOS
+                   #RHEL 
+  - name: Update cache and install apache and php packages for RHEL
     dnf:
       name:
         - httpd
         - php
       state: latest
       update_cache: yes
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution == "RedHat"
     #when: ansible_distribution in ["Debian", "Ubuntu"]
  #---------------------------------------------------------------------------                    
                      #AnyOS

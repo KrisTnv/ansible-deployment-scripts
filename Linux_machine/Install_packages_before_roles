@@ -5,11 +5,11 @@
   #Tasks run before anything else in the playbook (No different than normal tasks: !)
   pre_tasks: 
   
-  - name: Update repo cache (CentOS)
+  - name: Update repo cache (RHEL)
     tags: always
     dnf: 
       update_cache: yes
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution == "RedHat"
  
   - name: Update repo cache (Ubuntu)
     tags: always
@@ -59,38 +59,38 @@
     when: ansible_distribution == "Ubuntu"
     #when: ansible_distribution in ["Debian", "Ubuntu"]
 
-                    #CentOS 
-  - name: Install apache and php packages for CentOS
-    tags: apache,centos,httpd
+                    #RHEL
+  - name: Install apache and php packages for RHEL
+    tags: apache,redhat,httpd
     dnf:
       name:
         - httpd
         - php
       state: latest
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution == "RedHat"
     #when: ansible_distribution in ["Debian", "Ubuntu"]
 
-  - name: Start httpd (CentOS) 
-    #starts services on CentOS systems that are not automatically started when installed
-    tags: apache,centos,httpd
+  - name: Start httpd (RHEL) 
+    #starts services on RHEL systems that are not automatically started when installed
+    tags: apache,redhat,httpd
     service: 
       name: httpd
       state: started
       enabled: yes
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution == "RedHat"
 
 
   - name: change e-mail address for admin
-    tags: apache,centos,httpd
+    tags: apache,redhat,httpd
     lineinfile: 
       path: /etc/httpd/conf/httpd.conf
       regexp: '^ServerAdmin'
       line: ServerAdmin somebody@somewhere.net
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution == "RedHat"
     register: httpd 
 
-  - name: restart httpd (CentOS) 
-    tags: apache,centos,httpd
+  - name: restart httpd (RHEL) 
+    tags: apache,redhat,httpd
     service: 
       name: httpd
       state: restarted
@@ -110,12 +110,12 @@
   become: true 
   tasks: 
  
-  - name: Install mariadb package (CentOS)
-    tags: centos,db,mariadb
+  - name: Install mariadb package (RHEL)
+    tags: redhat,db,mariadb
     dnf: 
       name: mariadb
       state: latest
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution == "RedHat"
 
   - name: Install mariadb package (Ubuntu)
     tags: db,mariadb,ubuntu 
