@@ -5,6 +5,18 @@
   become_method: sudo
   gather_facts: no
   tasks: 
+
+     - name: Remove user "hpc" from remote server
+       user: 
+          name: hpc
+          state: absent 
+          remove: yes
+
+     - name: Delete file from sudoers.d
+       file: 
+         path: /etc/sudoers.d/hpc
+         state: absent 
+         
      - name: Remove user "sysadmin" from remote server
        ansible.builtin.user:
          name: sysadmin
