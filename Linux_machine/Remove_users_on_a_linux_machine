@@ -1,7 +1,7 @@
 ---
-- hosts:
+- hosts: workstations
   connection: ssh
-  become: yes
+  become: true
   become_method: sudo
   gather_facts: no
   tasks: 
@@ -16,7 +16,7 @@
        file: 
          path: /etc/sudoers.d/hpc
          state: absent 
-         
+
      - name: Remove user "sysadmin" from remote server
        ansible.builtin.user:
          name: sysadmin
