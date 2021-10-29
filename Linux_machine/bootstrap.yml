@@ -22,7 +22,7 @@
 - hosts: all
   become: true
   vars: 
-   password: hpc
+   password: "{{ user_password }}"
 
   tasks:
 
