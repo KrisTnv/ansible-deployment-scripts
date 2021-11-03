@@ -4,3 +4,4 @@ php_package_name: libapache2-mod-php
 ssh_users: "kristiyanslave hpc"
 ssh_template_file: sshd_config_ubuntu.j2
 user_password: "hpc"
+user_name: hpc
