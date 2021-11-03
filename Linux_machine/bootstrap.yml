@@ -39,7 +39,7 @@
     tags: always
     authorized_key:
       user: hpc
-      key: "{{ lookup('file', '/home/kristiyanslave/.ssh/id_rsa.pub) }}"
+      key: "{{ lookup('file', '/home/kristiyanslave/.ssh/id_rsa.pub') }}"
 
   - name: add sudoers file for hpc
     tags: always

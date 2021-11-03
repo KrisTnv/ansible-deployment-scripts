@@ -1,7 +1,7 @@
 - name: add ssh key for hpc
   authorized_key: 
     user: hpc
-    key: "{{ lookup('file', '/home/kristiyanslave/.ssh/id_rsa.pub) }}"
+    key: "{{ lookup('file', '/home/kristiyanslave/.ssh/id_rsa.pub') }}"
 
 - name: generate sshd_config file from template
   tags: ssh
