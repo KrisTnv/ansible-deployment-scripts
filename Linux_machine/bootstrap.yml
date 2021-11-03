@@ -22,6 +22,7 @@
 - hosts: all
   become: true
   vars: 
+   user_name: hpc
    password: "{{ user_password }}"
 
   tasks:
@@ -29,7 +30,7 @@
   - name: create hpc user
     tags: always
     user:
-      name: hpc
+      name: "{{ user_name }}"
       password: "{{ password | password_hash('sha512') }}"
       shell: /bin/bash
       groups: root
