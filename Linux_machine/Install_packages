@@ -10,6 +10,13 @@
        update_cache: yes
      changed_when: false
      when: ansible_distribution == "RedHat"
+
+   - name: update repository index (CentOS)
+     tags: always
+     dnf:
+       update_cache: yes
+     changed_when: false
+     when: ansible_distribution == "CentOS"     
  
    - name: update repository index (Ubuntu)
      tags: always
