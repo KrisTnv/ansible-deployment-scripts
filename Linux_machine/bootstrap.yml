@@ -12,6 +12,13 @@
       update_cache: yes
     when: ansible_distribution == "RedHat"
 
+  - name: Install updates (CentOS)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
   - name: Install updates (Ubuntu)
     tags: always
     apt:
