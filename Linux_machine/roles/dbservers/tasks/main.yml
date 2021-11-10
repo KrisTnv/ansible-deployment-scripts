@@ -13,8 +13,8 @@
   when: ansible_distribution == "Ubuntu"
 
 - name: Install mariadb package (CentOS)
-  tags: db,mariadb,ubuntu 
+  tags: db,mariadb,centos 
   apt: 
-    name: mariadb-server
+    name: mariadb
     state: latest
   when: ansible_distribution == "CentOS"
