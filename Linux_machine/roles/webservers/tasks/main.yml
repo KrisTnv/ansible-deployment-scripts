@@ -13,7 +13,7 @@
     state: started
     enabled: yes
 
-- name: change e-mail address for admin
+- name: change e-mail address for admin (RHEL)
   tags: apache,redhat,httpd
   lineinfile:
     path: /etc/httpd/conf/httpd.conf
@@ -22,6 +22,15 @@
   when: ansible_distribution == "RedHat"
   notify: restart_apache
   #register: apache
+
+- name: change e-mail address for admin (CentOS)
+  tags: apache,centos,httpd
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^ServerAdmin'
+    line: ServerAdmin somebody@somewhere.net
+  when: ansible_distribution == "CentOS"
+  notify: restart_apache
 
 - name: restart httpd
   tags: apache,httpd
