@@ -14,7 +14,7 @@
 
 - name: Install mariadb package (CentOS)
   tags: db,mariadb,centos 
-  apt: 
+  dnf: 
     name: mariadb
     state: latest
   when: ansible_distribution == "CentOS"
