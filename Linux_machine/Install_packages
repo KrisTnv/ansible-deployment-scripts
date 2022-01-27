@@ -49,3 +49,8 @@
    become: true
    roles:
      - fileservers
+ 
+ - hosts: slurm
+   become: true
+   roles: 
+     - slurm  
