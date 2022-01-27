@@ -1,1 +1,6 @@
----
+- name: Install slurm package (Ubuntu)
+  tags: slurm,ubuntu,install
+  apt:
+    name: slurm-wlm
+    state: latest
+  when: ansible_distribution == "Ubuntu"
