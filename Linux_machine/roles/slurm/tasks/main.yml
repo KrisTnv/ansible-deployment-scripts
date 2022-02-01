@@ -4,3 +4,13 @@
     name: slurm-wlm
     state: latest
   when: ansible_distribution == "Ubuntu"
+
+- name: generate slurm_config file from template
+  tags: slurm
+  template: 
+    src: "{{ slurm_template_file }}"
+    dest: /etc/slurm-llnl/slurm.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_slurm

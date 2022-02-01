@@ -1,7 +1,7 @@
-- name: add ssh key for hpc
+- name: add ssh key for hpcsys
   authorized_key: 
-    user: hpc
-    key: "{{ lookup('file', '/home/kristiyanslave/.ssh/id_rsa.pub') }}"
+    user: hpcsys
+    key: "{{ lookup('file', '/home/hpcsys/.ssh/id_rsa.pub') }}"
 
 - name: generate sshd_config file from template
   tags: ssh
@@ -13,12 +13,3 @@
     mode: 0644
   notify: restart_sshd
 
-- name: generate slurm_config file from template
-  tags: slurm
-  template: 
-    src: "{{ slurm_template_file }}"
-    dest: /etc/slurm-llnl/slurm.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart_slurm

@@ -29,28 +29,34 @@
    become: true
    roles:
      - base
+   tags: base
     
  - hosts: workstations
    become: true
    roles:
      - workstations
+   tags: workstations
  
  - hosts: webservers
    become: true
    roles:
      - webservers
+   tags: webservers
  
  - hosts: dbservers
    become: true
    roles:
      - dbservers
+   tags: dbservers
  
  - hosts: fileservers
    become: true
    roles:
      - fileservers
+   tags: fileservers
  
- - hosts: slurm
+ - hosts: slurmtest
    become: true
    roles: 
-     - slurm  
+     - slurm
+   tags: slurm

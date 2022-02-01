@@ -17,26 +17,28 @@
 
 # Ex 2: A collection of hosts belonging to the 'webservers' group
 
+[slurmcompute]
+slurmcompute1 ansible_host=192.168.100.15
+slurmcompute2 ansible_host=192.168.100.20
+slurmcompute3 ansible_host=192.168.100.21
+slurmcompute4 ansible_host=192.168.100.22
+slurmcompute5 ansible_host=192.168.100.23
+
 [webservers]
-serverhost ansible_host=kristiyanhost@129.215.1.181
-serverhost2 ansible_host=kristiyan-redhat@129.215.1.182
-#ipaserver  ansible_host=freeipa-server@172.17.0.2
+slurmcompute5 ansible_host=192.168.100.23
+
 
 [dbservers]
-serverhost ansible_host=kristiyanhost@129.215.1.181
-serverhost2 ansible_host=kristiyan-redhat@129.215.1.182
+slurmcompute5 ansible_host=192.168.100.23
 
 [fileservers]
-serverhost ansible_host=kristiyanhost@129.215.1.181
-serverhost2 ansible_host=kristiyan-redhat@129.215.1.182
+slurmcompute5 ansible_host=192.168.100.23
 
 [workstations]
-serverhost ansible_host=kristiyanhost@129.215.1.181
-serverhost2 ansible_host=kristiyan-redhat@129.215.1.182
-localhost ansible_host=kristiyanslave@129.215.1.179
+slurmcompute5 ansible_host=192.168.100.23
 
-[all:vars]
-ansible_python_interpreter=/usr/bin/python3
+#[all:vars]
+#ansible_python_interpreter=/usr/bin/python3
 
 
 # If you have multiple hosts following a pattern you can specify
