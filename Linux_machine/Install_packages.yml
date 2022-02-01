@@ -60,3 +60,9 @@
    roles: 
      - slurm
    tags: slurm
+
+ - hosts: slurmtest
+   become: true
+   roles: 
+     - munge
+   tags: munge
