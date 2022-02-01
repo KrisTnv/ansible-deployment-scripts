@@ -1,0 +1,8 @@
+---
+  - name: Install munge
+    apt: name=munge
+    register: munge_install
+
+  - name: Delete /etc/munge/munge.key created in munge installation
+    file: path=/etc/munge/munge.key state=absent
+    when: munge_install is changed and (munge_type_of_node == 'wn' or munge_key_password != '')

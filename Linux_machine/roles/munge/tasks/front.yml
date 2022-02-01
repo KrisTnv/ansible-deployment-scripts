@@ -1,0 +1,5 @@
+---
+  - name: Create munge key
+    shell: create-munge-key < /dev/null creates=/etc/munge/munge.key
+    when: not munge_key.stat.exists and munge_key_password == ''
+    notify: restart_munge
