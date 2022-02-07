@@ -1,5 +1,5 @@
 ---
 
-munge_type_of_node: front
+munge_type_of_node: wn
 # Password used to derive a munge key for authentication between the server and the workers
 munge_key_password: ''
