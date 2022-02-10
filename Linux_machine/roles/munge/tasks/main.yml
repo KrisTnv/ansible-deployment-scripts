@@ -1,10 +1,10 @@
 - name: Get tarball for munge 
   get_url:
-    url="https://github.com/dun/munge/tarball/master"
+    url="https://github.com/dun/munge/releases/download/munge-0.5.14/munge-0.5.14.tar.xz"
     dest="/home/{{ deploy_user }}/"
 
 - name: Unarchive source
   unarchive:
-    src="/home/{{ deploy_user }}/dun-munge-munge-0.5.14-53-g0c37cc0.tar.gz"
+    src="/home/{{ deploy_user }}/munge-0.5.14.tar.xz"
     dest="/home/{{ deploy_user }}"
     copy=no
