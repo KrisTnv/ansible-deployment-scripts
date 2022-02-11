@@ -1,6 +1,31 @@
-- name: Install slurm package (Ubuntu)
-  tags: slurm,ubuntu,install
-  apt:
-    name: slurm-wlm
-    state: latest
-  when: ansible_distribution == "Ubuntu"
+- name: Get tarball
+  tags: slurm,install
+  get_url: 
+    url="https://download.schedmd.com/slurm/slurm-20.11.8.tar.bz2"
+    dest="/home/{{ deploy_user }}/"
+#  register: new_archive
+
+- name: Unarchive source
+  tags: unarchive
+  unarchive:
+    src="/home/{{ deploy_user }}/slurm-20.11.8.tar.bz2"
+    dest="/home/{{ deploy_user }}"
+    copy=no
+#  when: new_archive|changed
+
+#- name: Install slurm package (Ubuntu)
+#  tags: slurm,ubuntu,install
+#  apt:
+#    name: slurm-wlm
+#    state: latest
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: generate slurm_config file from template
+#  tags: slurm
+#  template: 
+#    src: "{{ slurm_template_file }}"
+#    dest: /etc/slurm-llnl/slurm.conf
+#    owner: root
+#    group: root
+#    mode: 0644
+#  notify: restart_slurm

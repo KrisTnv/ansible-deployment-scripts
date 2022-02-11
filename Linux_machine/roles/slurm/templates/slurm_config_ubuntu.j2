@@ -2,7 +2,7 @@
 # Put this file on all nodes of your cluster.
 # See the slurm.conf man page for more information.
 #
-SlurmctldHost=ipaserver.example.com
+SlurmctldHost=slurmcompute5
 #SlurmctldHost=
 #
 #DisableRootJobs=NO
@@ -148,5 +148,5 @@ SlurmdLogFile=/var/log/slurm-llnl/slurmd.log
 #
 #
 # COMPUTE NODES
-NodeName=ipaserver.example.com NodeAddr=129.215.1.180 CPUs=4 State=UNKNOWN
-PartitionName=debug Nodes=ipaserver.example.com Default=YES MaxTime=INFINITE State=UP
+NodeName=slurmcompute5 NodeAddr=192.168.100.23 CPUs=2 State=UNKNOWN
+PartitionName=debug Nodes=slurmcompute5 Default=YES MaxTime=INFINITE State=UP

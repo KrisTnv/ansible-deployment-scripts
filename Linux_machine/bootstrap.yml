@@ -29,12 +29,12 @@
 - hosts: all
   become: true
   vars: 
-   user_name: hpc
+   user_name: hpcsys
    password: "{{ user_password }}"
 
   tasks:
 
-  - name: create hpc user
+  - name: create hpcsys user
     tags: always
     user:
       name: "{{ user_name }}"
@@ -42,17 +42,51 @@
       shell: /bin/bash
       groups: root
 
-  - name: add ssh key for hpc
+  - name: add ssh key for hpcsys
     tags: always
     authorized_key:
-      user: hpc
-      key: "{{ lookup('file', '/home/kristiyanslave/.ssh/id_rsa.pub') }}"
+      user: hpcsys
+      key: "{{ lookup('file', '/home/hpcsys/.ssh/id_rsa.pub') }}"
 
-  - name: add sudoers file for hpc
+  - name: add sudoers file for hpcsys
     tags: always
     copy:
-      src: /home/kristiyanslave/Ansible-scripts/files/sudoer_hpc
+      src: /home/hpcsys/ansible-scripts/files/sudoer_hpcsys
       dest: /etc/sudoers.d/hpc
       owner: root
       group: root
       mode: 0440
+
+  - name: install python3
+    package: 
+      name: python3
+  
+  - name: Set munge group 
+    group: 
+      name: "{{ munge_user }}"
+      gid: "{{ munge_uid }}"
+      system: yes
+      state: present 
+  
+  - name: Set slurm group 
+    group: 
+      name: "{{ slurm_user }}"
+      gid: "{{ slurm_uid }}"
+      system: yes
+      state: present
+
+  - name: Create munge user 
+    user: 
+      name: "{{ munge_user }}"
+      uid: "{{ munge_uid }}"
+      system: yes
+      group: "{{ munge_user }}"
+      createhome: no
+
+  - name: Create slurm user 
+    user: 
+      name: "{{ slurm_user }}"
+      uid: "{{ slurm_uid }}"
+      system: yes
+      group: "{{ slurm_user }}"
+      createhome: no
