@@ -1,4 +1,4 @@
- -name: Fetch common pre-requisite packages.
+- name: Fetch common pre-requisite packages.
   apt:
     update_cache: yes
     name:
