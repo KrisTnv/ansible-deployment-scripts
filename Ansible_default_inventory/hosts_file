@@ -25,6 +25,7 @@ slurmcompute4 ansible_host=192.168.100.124
 slurmcompute5 ansible_host=192.168.100.123
 
 [slurmtest]
+slurmcompute4 ansible_host=192.168.100.124
 slurmcompute5 ansible_host=192.168.100.123
 
 [webservers]
