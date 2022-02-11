@@ -10,3 +10,4 @@ slurm_user: slurm
 slurm_uid: 992
 munge_user: munge
 munge_uid: 991
+deploy_user: hpcsys
