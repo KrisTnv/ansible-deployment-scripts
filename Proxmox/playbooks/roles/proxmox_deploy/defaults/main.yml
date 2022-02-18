@@ -1,0 +1,6 @@
+VM_template: ubuntu-template
+default_disk: virtio0
+default_interface: ens18
+default_volume: /dev/vda
+default_partition: 2
+template_name: template-ubuntu-deployment
