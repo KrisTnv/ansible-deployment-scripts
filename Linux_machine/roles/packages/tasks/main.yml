@@ -1,0 +1,9 @@
+- name: Fetch common pre-requisite packages.
+  apt:
+    update_cache: yes
+    name:
+    - libssl-dev
+    - cython
+    - make
+    state: present
+  
