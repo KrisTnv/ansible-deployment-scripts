@@ -25,7 +25,7 @@
      changed_when: false
      when: ansible_distribution == "Ubuntu"
  
- - hosts: all
+ - hosts: slurmtest
    become: true
    roles:
      - base
@@ -58,11 +58,17 @@
  - hosts: slurmtest
    become: true
    roles: 
+     - munge
+   tags: munge
+ 
+ - hosts: slurmtest
+   become: true
+   roles: 
      - slurm
    tags: slurm
 
  - hosts: slurmtest
    become: true
-   roles: 
-     - munge
-   tags: munge
+   roles:
+     - packages
+   tags: packages
