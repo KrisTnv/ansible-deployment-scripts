@@ -2,7 +2,7 @@
 ## KEEP OUT OF GENERAL HOSTS FILE
 
 [proxmoxhosts]
-stitchy-dell-1 ansible_host=172.24.12.134 ansible_user=root ansible_ssh_private_key_file="~/.ssh/keys/stitchy-dell.key"
+stitchy-dell-1 ansible_host=192.168.100.1 ansible_user=root
 
-[proxmoxhosts:vars]
-ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p acf-login"'
+#[proxmoxhosts:vars]
+#ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p acf-login"'
