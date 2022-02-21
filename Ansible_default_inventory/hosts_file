@@ -23,22 +23,28 @@ slurmcompute2 ansible_host=192.168.100.125
 slurmcompute3 ansible_host=192.168.100.126
 slurmcompute4 ansible_host=192.168.100.124
 slurmcompute5 ansible_host=192.168.100.123
+slurmcompute6 ansible_host=192.168.100.139
 
 [slurmtest]
 slurmcompute4 ansible_host=192.168.100.124
 slurmcompute5 ansible_host=192.168.100.123
+slurmcompute6 ansible_host=192.168.100.139
 
 [webservers]
 slurmcompute5 ansible_host=192.168.100.123
+slurmcompute6 ansible_host=192.168.100.139
 
 [dbservers]
 slurmcompute5 ansible_host=192.168.100.123
+slurmcompute6 ansible_host=192.168.100.139
 
 [fileservers]
 slurmcompute5 ansible_host=192.168.100.123
+slurmcompute6 ansible_host=192.168.100.139
 
 [workstations]
 slurmcompute5 ansible_host=192.168.100.123
+slurmcompute6 ansible_host=192.168.100.139
 
 #[all:vars]
 #ansible_python_interpreter=/usr/bin/python3
