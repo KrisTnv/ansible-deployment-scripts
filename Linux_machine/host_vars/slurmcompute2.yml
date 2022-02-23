@@ -3,7 +3,7 @@ apache_service: apache2
 php_package_name: libapache2-mod-php
 ssh_users: "hpcsys"
 ssh_template_file: sshd_config_ubuntu.j2
-slurm_template_file: slurm_config_ubuntu.j2
+slurm_template_file: slurm.conf_current.j2
 user_password: "hpcsys"
 user_name: hpcsys
 slurm_user: slurm
