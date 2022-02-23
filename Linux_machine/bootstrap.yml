@@ -90,3 +90,18 @@
       system: yes
       group: "{{ slurm_user }}"
       createhome: no
+
+  - name: Set http proxy
+    become: yes
+    lineinfile:
+      dest: /etc/environment
+      state: present
+      line: 'http_proxy=http://192.168.100.254:3128'
+
+  - name: Set https proxy
+    become: yes
+    lineinfile:
+      dest: /etc/environment
+      state: present
+      line: 'https_proxy=http://192.168.100.254:3128'
+
