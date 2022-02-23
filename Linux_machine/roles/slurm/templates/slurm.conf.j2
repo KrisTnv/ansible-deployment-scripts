@@ -5,7 +5,7 @@
 #                   CONTROL                    #
 ################################################
 ClusterName=workshop
-SlurmctldHost=192.168.100.121
+SlurmctldHost=CentosSlurm
 
 
 SlurmUser=slurm
@@ -104,13 +104,13 @@ PrologFlags=contain,alloc,X11
 ################################################
 #               PROCESS TRACKING               #
 ################################################
-ProctrackType=proctrack/cgroup
+ProctrackType=proctrack/linuxproc
 
 
 ################################################
 #             RESOURCE CONFINEMENT             #
 ################################################
-TaskPlugin=task/affinity,task/cgroup
+TaskPlugin=task/affinity
 #TaskPluginParam=Cpusets,Autobind=Threads
 
 ################################################
@@ -159,6 +159,6 @@ PropagateResourceLimits=NONE
 #include /etc/slurm/partition.conf  - Need to check if we need a partition defined ??
 
 # COMPUTE NODES
-NodeName=192.168.100.[122,125,125,126] RealMemory=4096 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1 State=UNKNOWN
+NodeName=slurmcompute[1-8] RealMemory=4096 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1 State=UNKNOWN
 #PARTITION
 PartitionName=cpu Nodes=ALL Default=YES State=UP OverSubscribe=EXCLUSIVE MaxTime=48:00:00 DefaultTime=1:00:00 AllowQoS=sysadm,standard,high,short,debug,low,reservation
