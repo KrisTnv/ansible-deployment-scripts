@@ -58,7 +58,7 @@
  - hosts: slurmtest
    become: true
    roles: 
-     - munge
+     - { role: 'munge', munge_type_of_node: 'wn' }
    tags: munge
  
  - hosts: slurmtest
