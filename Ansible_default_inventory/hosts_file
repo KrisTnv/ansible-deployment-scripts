@@ -24,8 +24,8 @@ slurmcompute3 ansible_host=192.168.100.126
 slurmcompute4 ansible_host=192.168.100.124
 slurmcompute5 ansible_host=192.168.100.123
 slurmcompute6 ansible_host=192.168.100.139
-slurmcompute7 ansible_host=192.168.100.146
-slurmcompute8 ansible_host=192.168.100.145
+slurmcompute7 ansible_host=192.168.100.148
+slurmcompute8 ansible_host=192.168.100.147
 
 [slurmtest]
 slurmcompute1 ansible_host=192.168.100.122
@@ -34,8 +34,8 @@ slurmcompute4 ansible_host=192.168.100.124
 slurmcompute5 ansible_host=192.168.100.123
 slurmcompute3 ansible_host=192.168.100.126
 slurmcompute6 ansible_host=192.168.100.139
-slurmcompute7 ansible_host=192.168.100.146
-slurmcompute8 ansible_host=192.168.100.145
+slurmcompute7 ansible_host=192.168.100.148
+slurmcompute8 ansible_host=192.168.100.147
 
 [webservers]
 slurmcompute5 ansible_host=192.168.100.123
