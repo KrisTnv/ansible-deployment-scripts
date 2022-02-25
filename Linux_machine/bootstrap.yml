@@ -51,7 +51,7 @@
   - name: add sudoers file for hpcsys
     tags: always
     copy:
-      src: /home/hpcsys/changev1/files/sudoer_hpcsys
+      src: /home/hpcsys/ansible-scripts/files/sudoer_hpcsys
       dest: /etc/sudoers.d/hpc
       owner: root
       group: root
