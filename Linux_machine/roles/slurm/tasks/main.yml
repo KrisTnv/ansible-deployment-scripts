@@ -25,14 +25,14 @@
   args:
     chdir: "/home/{{ deploy_user }}/slurm-20.11.8/"
   with_items:
-    - ./configure
+    - ./configure  --prefix=/usr --sysconfdir=/etc
     - make
     - make install
 
-- name: generate slurm_config file from template
-  template:
-    src: "{{ slurm_template_file }}"
-    dest: /usr/local/etc
-    owner: root
-    group: root
-    mode: 0755
+      #- name: generate slurm_config file from template
+      #template:
+      #src: "{{ slurm_template_file }}"
+      #dest: /usr/local/etc
+      #owner: root
+      #group: root
+      #mode: 0755
