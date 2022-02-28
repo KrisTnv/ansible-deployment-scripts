@@ -15,7 +15,7 @@
   become: yes
   apt:
     update_cache: yes
-    name: 
+    name:
       - gcc
       - build-essential
     state: present
@@ -32,18 +32,18 @@
   become: yes
   command: chdir=/home/{{ deploy_user }}/slurm-20.11.8/ sudo make install
 
-    #- name: Build slurm 
+    #- name: Build slurm
     #shell: "{{ item }}"
     #args:
     #chdir: "/home/{{ deploy_user }}/slurm-20.11.8/"
     #with_items:
-    #- ./configure 
+    #- ./configure
     #- make
     #- make install
 
   #- name: generate slurm_config file from template
   #tags: slurm
-  #template: 
+  #template:
   #src: "{{ slurm_template_file }}"
   #dest: /usr/local/etc
   #owner: slurm
