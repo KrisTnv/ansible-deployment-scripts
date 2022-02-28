@@ -14,7 +14,21 @@
 
 - name: ./configure Slurm.
   tags: slurm,configure
-  command: './configure chdir /home/{{ deploy user }}/slurm-20.11.8'
+  command: './configure'
+  args:
+    chdir: "/home/{{ deploy_user }}/slurm-20.11.8"
+
+- name: make Slurm.
+  tags: slurm,configure
+  command: 'make'
+  args:
+    chdir: "/home/{{ deploy_user }}/slurm-20.11.8"
+
+- name: checkinstall Slurm.
+  tags: slurm,configure
+  command: 'checksinstall'
+  args:
+    chdir: "/home/{{ deploy_user }}/slurm-20.11.8"
 
 #  when: new_archive|changed
 
