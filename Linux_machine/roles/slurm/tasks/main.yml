@@ -20,32 +20,19 @@
       - build-essential
     state: present
 
-- name: Configure the tarball
-  become: yes
-  command: chdir=/home/{{ deploy_user }}/slurm-20.11.8/ ./configure
+- name: Build slurm
+  shell: "{{ item }}"
+  args:
+    chdir: "/home/{{ deploy_user }}/slurm-20.11.8/"
+  with_items:
+    - ./configure
+    - make
+    - make install
 
-- name: Make the tarball
-  become: yes
-  command: chdir=/home/{{ deploy_user }}/slurm-20.11.8/ make
-
-- name: Install the tarball
-  become: yes
-  command: chdir=/home/{{ deploy_user }}/slurm-20.11.8/ sudo make install
-
-    #- name: Build slurm
-    #shell: "{{ item }}"
-    #args:
-    #chdir: "/home/{{ deploy_user }}/slurm-20.11.8/"
-    #with_items:
-    #- ./configure
-    #- make
-    #- make install
-
-  #- name: generate slurm_config file from template
-  #tags: slurm
-  #template:
-  #src: "{{ slurm_template_file }}"
-  #dest: /usr/local/etc
-  #owner: slurm
-  #group: slurm
-  #mode: 0644
+- name: generate slurm_config file from template
+  template:
+    src: "{{ slurm_template_file }}"
+    dest: /usr/local/etc
+    owner: root
+    group: root
+    mode: 0755
