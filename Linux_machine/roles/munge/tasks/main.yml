@@ -31,15 +31,15 @@
     - name: Create munge.key file with password
       copy: content= "{{ key_content.stdout }}" dest=/etc/munge/munge.key mode=0400 owner=munge
 
-    - name: copy munge key to compute nodes
-      copy: src=files/munge.key
-        dest=/etc/munge/munge.key
-        owner=munge
-        group=munge
-        mode=0400
+      #- name: copy munge key to compute nodes
+      #copy: src=files/munge.key
+      #  dest=/etc/munge/munge.key
+      #  owner=munge
+      #  group=munge
+      #  mode=0400
 
-    - name: set permissions on the munge key
-      file: path=/etc/munge/munge.key mode=0400 owner=munge group=munge
+      #- name: set permissions on the munge key
+      #file: path=/etc/munge/munge.key mode=0400 owner=munge group=munge
 
     when: not munge_key.stat.exists and munge_key_password != ''
 
