@@ -58,12 +58,6 @@
  - hosts: slurmtest
    become: true
    roles: 
-     - { role: 'munge', munge_type_of_node: 'wn' }
-   tags: munge
- 
- - hosts: slurmtest
-   become: true
-   roles: 
      - slurm
    tags: slurm
 
@@ -72,3 +66,15 @@
    roles:
      - packages
    tags: packages
+
+ - hosts: dbservers
+   become: true
+   roles: 
+     - slurmdbd
+   tags: slurmdbd
+
+ - hosts: slurmtest
+   become: true
+   roles:
+     - { role: 'munge', munge_type_of_node: 'wn' }
+   tags: munge

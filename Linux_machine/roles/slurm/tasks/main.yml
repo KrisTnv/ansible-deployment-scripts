@@ -37,15 +37,6 @@
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
 
-    #- name: Build slurm
-    #shell: "{{ item }}"
-    #args:
-    #chdir: "/home/{{ deploy_user }}/slurm-20.11.8/"
-    #with_items:
-    #- ./configure  --prefix=/usr --sysconfdir=/etc
-    #- make
-    #- make install
-
 - name: Slurm | Copy all config files
   copy:
     src: "{{ item }}"

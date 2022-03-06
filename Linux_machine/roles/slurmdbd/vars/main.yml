@@ -1,0 +1,3 @@
+---
+slurm_dbpw: hpcsys
+mariadb_rootpw: hpcsys
