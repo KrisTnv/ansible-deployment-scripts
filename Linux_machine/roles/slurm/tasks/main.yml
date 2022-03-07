@@ -37,14 +37,15 @@
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
 
-- name: Slurm | Copy all config files
+- name: Slurm | Copy all slurm onfig files
+  become: yes
   copy:
     src: "{{ item }}"
     dest: "/usr/local/etc/"
     owner: slurm
     group: slurm
     mode: 0444
-  with_fileglob: "/usr/local/etc/*"
+  with_fileglob: "/usr/local/etc/slurm.conf"
 
   #- name: generate slurm_config file from template
   #template:
