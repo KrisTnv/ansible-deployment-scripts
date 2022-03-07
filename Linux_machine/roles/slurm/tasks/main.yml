@@ -50,7 +50,7 @@
   #- name: generate slurm_config file from template
   #template:
   #  src: "{{ slurm_template_file }}"
-  #  dest: /usr/local/etc
+  #  dest: /usr/local/etc/slurm.conf
   #  owner: slurm
   #  group: slurm
   #  mode: 0400
