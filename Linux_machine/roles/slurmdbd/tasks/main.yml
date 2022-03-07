@@ -12,7 +12,7 @@
     dest: "/usr/local/etc/slurmdbd.conf"
     owner: slurm
     group: slurm
-    mode: 0400
+    mode: 0600
 
 - name: Slurm | Ensure that mariadb is stoped to replace variables
   service:
@@ -41,12 +41,14 @@
     state: started
 
 - name: Slurm | Create slurm user in db
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   mysql_user:
     name: slurm
     password: "{{ slurm_dbpw }}"
     priv: '*.*:ALL'
     login_user: root
     login_password: "{{ mariadb_rootpw }}"
-    login_unix_socket: /var/lib/mysql/mysql.sock
+    login_unix_socket: /var/run/mysqld/mysqld.sock
     state: present
-
+  no_log: false
