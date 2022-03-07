@@ -1,31 +1,73 @@
 - name: Get tarball
   tags: slurm,install
-  get_url: 
+  get_url:
     url="https://download.schedmd.com/slurm/slurm-20.11.8.tar.bz2"
     dest="/home/{{ deploy_user }}/"
-#  register: new_archive
 
 - name: Unarchive source
-  tags: unarchive
+  tags: slurm,unarchive
   unarchive:
     src="/home/{{ deploy_user }}/slurm-20.11.8.tar.bz2"
-    dest="/home/{{ deploy_user }}"
+    dest=/home/{{ deploy_user }}
     copy=no
-#  when: new_archive|changed
 
-#- name: Install slurm package (Ubuntu)
-#  tags: slurm,ubuntu,install
-#  apt:
-#    name: slurm-wlm
-#    state: latest
-#  when: ansible_distribution == "Ubuntu"
+- name: Install C compiler
+  become: yes
+  apt:
+    update_cache: yes
+    name:
+      - gcc
+      - build-essential
+    state: present
 
-#- name: generate slurm_config file from template
-#  tags: slurm
-#  template: 
-#    src: "{{ slurm_template_file }}"
-#    dest: /etc/slurm-llnl/slurm.conf
-#    owner: root
-#    group: root
-#    mode: 0644
-#  notify: restart_slurm
+- name: Slurm | Build & install
+  shell: "./configure --sysconfdir=/usr/local/etc --prefix=/usr/local && make -j 4 && make install"
+  args:
+    chdir: /home/{{ deploy_user }}/slurm-20.11.8/
+
+- name: Slurm | Copy systemd files
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/"
+    owner: hpcsys
+    group: hpcsys
+    remote_src: yes
+  loop: 
+    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmd.service"
+    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
+    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
+
+- name: Slurm | Copy all slurm onfig files
+  become: yes
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/"
+    owner: slurm
+    group: slurm
+    mode: 0444
+  with_fileglob: "/usr/local/etc/slurm.conf"
+
+  #- name: generate slurm_config file from template
+  #template:
+  #  src: "{{ slurm_template_file }}"
+  #  dest: /usr/local/etc
+  #  owner: slurm
+  #  group: slurm
+  #  mode: 0400
+  
+- name: Slurm | Create spool folder
+  file:
+    path: "/var/spool/slurm"
+    owner: slurm
+    group: slurm
+    mode: 0700
+    state: directory
+
+- name: Slurm | Create log folder
+  file:
+    path: "/var/log/slurm"
+    owner: slurm
+    group: slurm
+    mode: 0700
+    state: directory
+
