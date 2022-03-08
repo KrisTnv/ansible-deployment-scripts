@@ -31,10 +31,13 @@ slurmcompute8 ansible_host=192.168.100.153
 slurmcompute8 ansible_host=192.168.100.153
 slurmcompute7 ansible_host=192.168.100.148
 
-[webservers]
+[controllers]
+slurmcontrol3 ansible_host=192.168.100.152
 
 [dbservers]
 slurmcontrol3 ansible_host=192.168.100.152
+
+[webservers]
 
 [fileservers]
 
