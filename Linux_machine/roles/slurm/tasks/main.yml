@@ -65,6 +65,14 @@
   tags: configure
   when: not sconf_exists.stat.exists
 
+- name: Slurm | Deploy slurm.conf IF ABSENT
+  copy:
+    src: slurm.conf
+    dest: /usr/local/etc
+    directory_mode: 0755
+    mode: 0644
+  tags: reconfigure
+
 - name: Slurm | Check if partition.conf exists
   tags: configure
   stat:
@@ -79,6 +87,14 @@
     mode: 0644
   tags: configure
   when: not pconf_exists.stat.exists
+
+- name: Slurm | Deploy partition.conf IF ABSENT
+  copy:
+    src: partition.conf
+    dest: /usr/local/etc
+    directory_mode: 0755
+    mode: 0644
+  tags: reconfigure
 
   #- name: generate slurm_config file from template
   #template:
