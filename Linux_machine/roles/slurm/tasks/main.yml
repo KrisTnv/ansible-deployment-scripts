@@ -11,6 +11,8 @@
     dest=/home/{{ deploy_user }}
     copy=no
 
+
+
 - name: Install C compiler
   become: yes
   apt:
@@ -18,6 +20,7 @@
     name:
       - gcc
       - build-essential
+      - cython
     state: present
 
 - name: Slurm | Build & install
@@ -37,15 +40,45 @@
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
 
-- name: Slurm | Copy all slurm onfig files
-  become: yes
+#- name: Slurm | Copy all slurm onfig files
+#  become: yes
+#  copy:
+#    src: "{{ item }}"
+#    dest: "/usr/local/etc/"
+#    owner: slurm
+#    group: slurm
+#    mode: 0444
+#  with_fileglob: "/usr/local/etc/slurm.conf"
+
+- name: Slurm | Check if slurm.conf exists
+  tags: configure
+  stat:
+    path: /usr/local/etc/slurm.conf
+  register: sconf_exists
+ 
+- name: Slurm | Deploy slurm.conf IF ABSENT
   copy:
-    src: "{{ item }}"
-    dest: "/usr/local/etc/"
-    owner: slurm
-    group: slurm
-    mode: 0444
-  with_fileglob: "/usr/local/etc/slurm.conf"
+    src: slurm.conf
+    dest: /usr/local/etc
+    directory_mode: 0755
+    mode: 0644
+  tags: configure
+  when: not sconf_exists.stat.exists
+
+- name: Slurm | Check if partition.conf exists
+  tags: configure
+  stat:
+    path: /usr/local/etc/partition.conf
+  register: pconf_exists
+
+- name: Slurm | Deploy partition.conf IF ABSENT
+  copy:
+    src: partition.conf
+    dest: /usr/local/etc
+    directory_mode: 0755
+    mode: 0644
+  tags: configure
+  when: not pconf_exists.stat.exists
 
   #- name: generate slurm_config file from template
   #template:
