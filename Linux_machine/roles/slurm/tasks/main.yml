@@ -37,7 +37,7 @@
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
 
-- name: Slurm | Copy all slurm onfig files
+- name: Slurm | Copy all slurm config files
   become: yes
   copy:
     src: "{{ item }}"
@@ -45,16 +45,13 @@
     owner: slurm
     group: slurm
     mode: 0444
-  with_fileglob: "/usr/local/etc/slurm.conf"
+  with_fileglob: 
+    - "/usr/local/etc/slurm.conf"
+    - "/usr/local/etc/partition.conf"
+  notify: 
+    - restart_slurmctld
+    - restart_slurmd
 
-  #- name: generate slurm_config file from template
-  #template:
-  #  src: "{{ slurm_template_file }}"
-  #  dest: /usr/local/etc/slurm.conf
-  #  owner: slurm
-  #  group: slurm
-  #  mode: 0400
-  
 - name: Slurm | Create spool folder
   file:
     path: "/var/spool/slurm"
