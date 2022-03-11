@@ -44,6 +44,21 @@
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
 
+- name: Slurm | Copy all slurm config files
+  become: yes
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/"
+    owner: slurm
+    group: slurm
+    mode: 0644
+  with_fileglob:
+    - "/usr/local/etc/slurm.conf"
+    - "/usr/local/etc/partition.conf"
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
+
 #- name: Slurm | Set slurm user and group in slurmd.service
 #  become: yes
 #  lineinfile:
@@ -90,19 +105,3 @@
     group: slurm
     mode: 0700
     state: directory
-
-- name: Slurm | Copy all slurm config files
-  become: yes
-  copy:
-    src: "{{ item }}"
-    dest: "/usr/local/etc/"
-    owner: slurm
-    group: slurm
-    mode: 0644
-  with_fileglob:
-    - "/usr/local/etc/slurm.conf"
-    - "/usr/local/etc/partition.conf"
-  notify:
-    - restart_slurmctld
-    - restart_slurmd
-
