@@ -1,0 +1,32 @@
+---
+  - name: Yum install epel
+    yum: name=epel-release
+
+  - name: Yum install munge RHEL 7-
+    yum: name=munge,munge-devel
+    when: ansible_distribution_major_version|int < 8
+
+  - name: Yum install munge RHEL 8+ (powertools)
+    yum: name=munge,munge-devel enablerepo=powertools
+    when: ansible_distribution_major_version|int >= 8
+    ignore_errors: yes
+    register: munge_powertools
+
+  - name: Yum install munge RHEL 8+ (PowerTools)
+    yum: name=munge,munge-devel enablerepo=PowerTools
+    when: ansible_distribution_major_version|int >= 8 and munge_powertools is failed
+
+  - block:
+    - name: Yum install packages for Centos 6
+      yum: name=libselinux-python
+
+    # Fix for centos 6 due to socket errors
+    - name: Create munge config file
+      copy:
+        content: 'OPTIONS="--force"'
+        dest: /etc/default/munge
+        force: no
+        group: root
+        owner: root
+        mode: 0644
+    when: ansible_distribution_major_version|int == 6

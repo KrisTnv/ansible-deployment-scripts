@@ -18,26 +18,27 @@
 # Ex 2: A collection of hosts belonging to the 'webservers' group
 
 [slurmcompute]
+slurmcontrol3 ansible_host=192.168.100.152
 slurmcompute1 ansible_host=192.168.100.122
 slurmcompute2 ansible_host=192.168.100.125
 slurmcompute3 ansible_host=192.168.100.126
 slurmcompute4 ansible_host=192.168.100.124
 slurmcompute5 ansible_host=192.168.100.123
+slurmcompute7 ansible_host=192.168.100.148
+slurmcompute8 ansible_host=192.168.100.153
 
 [slurmtest]
-slurmcompute5 ansible_host=192.168.100.123
+slurmcompute8 ansible_host=192.168.100.153
+slurmcompute7 ansible_host=192.168.100.148
 
 [webservers]
-slurmcompute5 ansible_host=192.168.100.123
 
 [dbservers]
-slurmcompute5 ansible_host=192.168.100.123
+slurmcontrol3 ansible_host=192.168.100.152
 
 [fileservers]
-slurmcompute5 ansible_host=192.168.100.123
 
 [workstations]
-slurmcompute5 ansible_host=192.168.100.123
 
 #[all:vars]
 #ansible_python_interpreter=/usr/bin/python3

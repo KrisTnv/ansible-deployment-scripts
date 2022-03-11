@@ -1,0 +1,22 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: "Include grycap.munge"
+      include_role:
+        name: "ansible-role-munge"
+      vars:
+        nfs_mode: 'front'
+        nfs_exports: [{path: "/run/test", export: "localhost(fsid=0,rw,async,no_subtree_check,insecure)"}]
+
+    - name: Test munge is in path
+      command: which munge
+      changed_when: False
+
+    - name: Test munge key exists 
+      file:
+        path: /etc/munge/munge.key
+      changed_when: False

@@ -1,0 +1,54 @@
+- name: Make sure pymysql is present
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  pip:
+    name: pymysql
+    state: present
+
+- name: Slurm | Template slurmdbd config
+  template:
+    src: "slurmdbd.conf.j2"
+    dest: "/usr/local/etc/slurmdbd.conf"
+    owner: slurm
+    group: slurm
+    mode: 0600
+
+- name: Slurm | Ensure that mariadb is stoped to replace variables
+  service:
+    name: mariadb
+    state: stopped
+
+- name: Slurm | Copy Mariadb server configs for slurm
+  copy:
+    src: "my.cnf"
+    dest: "/etc/my.cnf"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Slurm | Removes Old Mariadb log files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/var/lib/mysql/ib_logfile0"
+    - "/var/lib/mysql/ib_logfile1"
+
+- name: Slurm | Ensure that mariadb is up
+  service:
+    name: mariadb
+    state: started
+
+- name: Slurm | Create slurm user in db
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  mysql_user:
+    name: slurm
+    password: "{{ slurm_dbpw }}"
+    priv: '*.*:ALL'
+    login_user: root
+    login_password: "{{ mariadb_rootpw }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    state: present
+  no_log: false

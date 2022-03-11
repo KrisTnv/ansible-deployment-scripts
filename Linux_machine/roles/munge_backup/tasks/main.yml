@@ -1,0 +1,41 @@
+- name: Get tarball for munge
+  get_url:
+    url="https://github.com/dun/munge/releases/download/munge-0.5.14/munge-0.5.14.tar.xz"
+    dest="/home/{{ deploy_user }}/"
+
+- name: Unarchive source
+  unarchive:
+    src="/home/{{ deploy_user }}/munge-0.5.14.tar.xz"
+    dest=/home/{{ deploy_user }}
+    copy=no
+
+#- name: Install the tarball
+#  become: yes
+#  shell: "./configure"
+#  args: 
+#    chdir: "/home/{{ deploy_user }}"
+
+- name: set munge log directory access rights
+  file: path=/var/log/munge state=directory mode=0700
+
+- name: set log directory access rights
+  file: path=/var/log state=directory mode=0755
+
+- name: copy munge key to compute nodes
+  copy: src=files/munge.key
+        dest=/etc/munge/munge.key
+        owner=munge
+        group=munge
+        mode=0400
+  notify:
+   - restart_munge
+
+- name: set permissions on the munge key 
+  file: path=/etc/munge/munge.key mode=0400 owner=munge group=munge
+  notify:
+   - restart_munge
+
+- name: start and enable munge on compute nodes
+  service: name=munge state=started enabled=yes
+  notify:
+   - restart_munge
