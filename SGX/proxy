@@ -1,2 +1,0 @@
-export http_proxy=http://172.24.75.1:3128
-export https_proxy=http://172.24.75.1:3128
