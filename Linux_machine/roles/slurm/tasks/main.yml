@@ -37,7 +37,6 @@
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
 
-
 - name: Slurm | Copy all slurm config files
   become: yes
   copy:
