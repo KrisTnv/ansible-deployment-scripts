@@ -20,10 +20,17 @@
       - build-essential
     state: present
 
+- name: Slurm | check slurmd is installed
+  service:
+    name: slurmd
+    state: started
+  register: slurm_installed
+
 - name: Slurm | Build & install
   shell: "./configure --sysconfdir=/usr/local/etc --prefix=/usr/local && make -j 4 && make install"
   args:
     chdir: /home/{{ deploy_user }}/slurm-20.11.8/
+  when: slurm_installed is failed
 
 - name: Slurm | Copy systemd files
   copy:
@@ -36,6 +43,19 @@
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmd.service"
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
     - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
+
+#- name: Slurm | Set slurm user and group in slurmd.service
+#  become: yes
+#  lineinfile:
+#    path: /etc/systemd/system/slurmd.service
+#    line: "{{ item }}"
+#    insertbefore: "^ 'Type=simple' "
+#  with_items:
+#    - User=slurm
+#    - Group=slurm
+#  notify: 
+#    - restart_slurmctld
+#    - restart_slurmd
 
 - name: Slurm | Create pid directory
   become: yes
