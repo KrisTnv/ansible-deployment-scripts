@@ -38,26 +38,51 @@
     dest: "/etc/systemd/system/"
     owner: hpcsys
     group: hpcsys
-    remote_src: yes
   loop: 
-    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmd.service"
-    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
-    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
+    - "/home/{{ deploy_user }}/slurm-service/slurmd.service"
+    - "/home/{{ deploy_user }}/slurm-service/slurmctld.service"
+    - "/home/{{ deploy_user }}/slurm-service/slurmdbd.service"
 
-- name: Slurm | Copy all slurm config files
-  become: yes
-  copy:
+- name: Slurm | Copy slurm config files
+  template:
     src: "{{ item }}"
-    dest: "/usr/local/etc/"
+    dest: "/usr/local/etc/{{ item }}"
     owner: slurm
-    group: slurm
-    mode: 0644
-  with_fileglob:
-    - "/usr/local/etc/slurm.conf"
-    - "/usr/local/etc/partition.conf"
+    group: slurm 
+    mode: '0644'
+  with_items:
+    - slurm.conf
   notify:
     - restart_slurmctld
     - restart_slurmd
+
+- name: Slurm | Copy slurm config files
+  template:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/{{ item }}"
+    owner: slurm
+    group: slurm
+    mode: '0644'
+  with_items:
+    - partition.conf
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
+
+#- name: Slurm | Copy all slurm config files
+#  become: yes
+#  copy:
+#    src: "{{ item }}"
+#    dest: "/usr/local/etc/"
+#    owner: slurm
+#    group: slurm
+#    mode: 0644
+#  with_fileglob:
+#    - "/usr/local/etc/slurm.conf"
+#    - "/usr/local/etc/partition.conf"
+#  notify:
+#    - restart_slurmctld
+#    - restart_slurmd
 
 #- name: Slurm | Set slurm user and group in slurmd.service
 #  become: yes
