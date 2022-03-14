@@ -84,19 +84,6 @@
 #    - restart_slurmctld
 #    - restart_slurmd
 
-#- name: Slurm | Set slurm user and group in slurmd.service
-#  become: yes
-#  lineinfile:
-#    path: /etc/systemd/system/slurmd.service
-#    line: "{{ item }}"
-#    insertbefore: "^ 'Type=simple' "
-#  with_items:
-#    - User=slurm
-#    - Group=slurm
-#  notify: 
-#    - restart_slurmctld
-#    - restart_slurmd
-
 - name: Slurm | Create pid directory
   become: yes
   file:
