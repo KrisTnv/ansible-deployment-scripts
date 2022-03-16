@@ -52,7 +52,7 @@
     mode: 0755
   loop:
     - "/home/hpcsys/slurm-20.11.8/src/plugins/auth/munge/.libs/auth_munge.so"
-    - "/home/hpcsys/slurm-20.11.8/src/plugins/auth/munge/.libs/cred_munge.so"
+    - "/home/hpcsys/slurm-20.11.8/src/plugins/cred/munge/.libs/cred_munge.so"
 
 - name: Slurm | Copy slurm config files
   template:
