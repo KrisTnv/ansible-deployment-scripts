@@ -43,6 +43,16 @@
     - "/home/{{ deploy_user }}/slurm-service/slurmctld.service"
     - "/home/{{ deploy_user }}/slurm-service/slurmdbd.service"
 
+- name: Slurm | Copy munge plugins
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/local/lib/slurm/"
+    owner: hpcsys
+    group: hpcsys
+  loop:
+    - "/home/hpcsys/slurm-20.11.8/src/plugins/auth/munge/.libs/auth_munge.so"
+    - "/home/hpcsys/slurm-20.11.8/src/plugins/auth/munge/.libs/cred_munge.so"
+
 - name: Slurm | Copy slurm config files
   template:
     src: "{{ item }}"
