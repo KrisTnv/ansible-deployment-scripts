@@ -54,7 +54,7 @@
     - "/home/hpcsys/slurm-20.11.8/src/plugins/auth/munge/.libs/auth_munge.so"
     - "/home/hpcsys/slurm-20.11.8/src/plugins/cred/munge/.libs/cred_munge.so"
 
-- name: Slurm | Copy slurm config files
+- name: Slurm | Copy slurm config file
   template:
     src: "{{ item }}"
     dest: "/usr/local/etc/{{ item }}"
@@ -67,7 +67,7 @@
     - restart_slurmctld
     - restart_slurmd
 
-- name: Slurm | Copy slurm config files
+- name: Slurm | Copy slurm partition file
   template:
     src: "{{ item }}"
     dest: "/usr/local/etc/{{ item }}"
@@ -79,6 +79,20 @@
   notify:
     - restart_slurmctld
     - restart_slurmd
+
+- name: Slurm | Copy job_submit.lua file
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/{{ item }}"
+    owner: slurm
+    group: slurm
+    mode: '0644'
+  with_items:
+    - job_submit.lua
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
+  when: "'controllers' in group_names"
 
 #- name: Slurm | Copy all slurm config files
 #  become: yes
