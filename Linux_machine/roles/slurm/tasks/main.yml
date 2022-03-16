@@ -142,3 +142,9 @@
     group: slurm
     mode: 0700
     state: directory
+
+- name: Scontrol reconfig 
+  command: scontrol reconfig
+  run_once: true
+  when: reconfig_services == true
+
