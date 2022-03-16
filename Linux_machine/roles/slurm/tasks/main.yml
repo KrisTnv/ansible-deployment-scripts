@@ -11,8 +11,6 @@
     dest=/home/{{ deploy_user }}
     copy=no
 
-
-
 - name: Install C compiler
   become: yes
   apt:
@@ -20,13 +18,19 @@
     name:
       - gcc
       - build-essential
-      - cython
     state: present
+
+- name: Slurm | check slurmd is installed
+  service:
+    name: slurmd
+    state: started
+  register: slurm_installed
 
 - name: Slurm | Build & install
   shell: "./configure --sysconfdir=/usr/local/etc --prefix=/usr/local && make -j 4 && make install"
   args:
     chdir: /home/{{ deploy_user }}/slurm-20.11.8/
+  when: slurm_installed is failed
 
 - name: Slurm | Copy systemd files
   copy:
@@ -34,76 +38,70 @@
     dest: "/etc/systemd/system/"
     owner: hpcsys
     group: hpcsys
-    remote_src: yes
   loop: 
-    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmd.service"
-    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
-    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
+    - "/home/{{ deploy_user }}/slurm-service/slurmd.service"
+    - "/home/{{ deploy_user }}/slurm-service/slurmctld.service"
+    - "/home/{{ deploy_user }}/slurm-service/slurmdbd.service"
 
-#- name: Slurm | Copy all slurm onfig files
+- name: Slurm | Copy slurm config files
+  template:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/{{ item }}"
+    owner: slurm
+    group: slurm 
+    mode: '0644'
+  with_items:
+    - slurm.conf
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
+
+- name: Slurm | Copy slurm config files
+  template:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/{{ item }}"
+    owner: slurm
+    group: slurm
+    mode: '0644'
+  with_items:
+    - partition.conf
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
+
+#- name: Slurm | Copy all slurm config files
 #  become: yes
 #  copy:
 #    src: "{{ item }}"
 #    dest: "/usr/local/etc/"
 #    owner: slurm
 #    group: slurm
-#    mode: 0444
-#  with_fileglob: "/usr/local/etc/slurm.conf"
+#    mode: 0644
+#  with_fileglob:
+#    - "/usr/local/etc/slurm.conf"
+#    - "/usr/local/etc/partition.conf"
+#  notify:
+#    - restart_slurmctld
+#    - restart_slurmd
 
-- name: Slurm | Check if slurm.conf exists
-  tags: configure
-  stat:
-    path: /usr/local/etc/slurm.conf
-  register: sconf_exists
- 
-- name: Slurm | Deploy slurm.conf IF ABSENT
-  copy:
-    src: slurm.conf
-    dest: /usr/local/etc
-    directory_mode: 0755
+- name: Slurm | Create pid directory
+  become: yes
+  file:
+    path: "/var/run/slurm"
+    owner: slurm
+    group: slurm
+    mode: 0700
+    state: directory
+
+- name: Slurm | Create pid file
+  become: yes
+  file:
+    path: "/var/run/slurm/slurmd.pid"
+    owner: slurm
+    group: slurm
     mode: 0644
-  tags: configure
-  when: not sconf_exists.stat.exists
+    state: touch
 
-- name: Slurm | Deploy slurm.conf IF ABSENT
-  copy:
-    src: slurm.conf
-    dest: /usr/local/etc
-    directory_mode: 0755
-    mode: 0644
-  tags: reconfigure
-
-- name: Slurm | Check if partition.conf exists
-  tags: configure
-  stat:
-    path: /usr/local/etc/partition.conf
-  register: pconf_exists
-
-- name: Slurm | Deploy partition.conf IF ABSENT
-  copy:
-    src: partition.conf
-    dest: /usr/local/etc
-    directory_mode: 0755
-    mode: 0644
-  tags: configure
-  when: not pconf_exists.stat.exists
-
-- name: Slurm | Deploy partition.conf IF ABSENT
-  copy:
-    src: partition.conf
-    dest: /usr/local/etc
-    directory_mode: 0755
-    mode: 0644
-  tags: reconfigure
-
-  #- name: generate slurm_config file from template
-  #template:
-  #  src: "{{ slurm_template_file }}"
-  #  dest: /usr/local/etc/slurm.conf
-  #  owner: slurm
-  #  group: slurm
-  #  mode: 0400
-  
 - name: Slurm | Create spool folder
   file:
     path: "/var/spool/slurm"
@@ -119,4 +117,3 @@
     group: slurm
     mode: 0700
     state: directory
-
