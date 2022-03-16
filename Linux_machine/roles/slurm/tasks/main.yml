@@ -47,8 +47,9 @@
   copy:
     src: "{{ item }}"
     dest: "/usr/local/lib/slurm/"
-    owner: hpcsys
-    group: hpcsys
+    owner: root
+    group: root
+    mode: 0755
   loop:
     - "/home/hpcsys/slurm-20.11.8/src/plugins/auth/munge/.libs/auth_munge.so"
     - "/home/hpcsys/slurm-20.11.8/src/plugins/auth/munge/.libs/cred_munge.so"
