@@ -11,6 +11,8 @@
     dest=/home/{{ deploy_user }}
     copy=no
 
+
+
 - name: Install C compiler
   become: yes
   apt:
@@ -18,6 +20,7 @@
     name:
       - gcc
       - build-essential
+      - cython
     state: present
 
 - name: Slurm | check slurmd is installed
