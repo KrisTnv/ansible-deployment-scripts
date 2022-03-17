@@ -1,0 +1,41 @@
+---
+- hosts: nfs_server
+  sudo: yes
+
+  tasks:
+    - name: Create mountable dir
+      file: path=/nfsshare state=directory mode=777 owner=root group=root
+
+    - name: make sure the mount drive has a filesystem
+      filesystem: fstype=ext4 dev={{ mountable_share_drive | default('/dev/xvdb') }}
+
+    - name: set mountpoints
+      mount: name=/nfsshare src={{ mountable_share_drive | default('/dev/xvdb') }} fstype=auto opts=defaults,nobootwait dump=0 passno=2 state=mounted
+
+    - name: Ensure NFS utilities are installed.
+      apt: name={{ item }} state=installed update_cache=yes
+      with_items:
+        - nfs-common
+        - nfs-kernel-server
+
+    - name: copy the /etc/exports
+      template: src=exports.j2 dest=/etc/exports owner=root group=root
+
+    - name: restart nfs server
+      service: name=nfs-kernel-server state=restarted
+
+- hosts: nfs_clients
+  sudo: yes
+
+  tasks:
+    - name: Ensure NFS common is installed.
+      apt: name=nfs-common state=installed update_cache=yes
+
+    - name: Create mountable dir
+      file: path=/nfsshare state=directory mode=777 owner=root group=root
+
+    - name: set mountpoints
+      mount: name=/nfs 
+src={{hostvars[groups['nfs_server'][0]]['ansible_eth0']['ipv4']['address']}}:/nfsshare fstype=nfs 
+opts=defaults,nobootwait dump=0 passno=2 state=mounted
+
