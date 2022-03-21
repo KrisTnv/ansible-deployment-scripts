@@ -45,7 +45,6 @@ function string.starts(String,Start)
      default_account          = job_desc.default_account
      switches                 = job_desc.req_switch
      features                 = job_desc.features
-     gres                     = job_desc.gres
      num_gpus_num             = 0
      num_gpus_text            = "none"
      user_spec_nodes          = 0
@@ -53,16 +52,20 @@ function string.starts(String,Start)
      user_spec_tasks_per_node = 0
  
      -- standardlength=2880
- 
+     if tres_per_node ~= nil then
+         slurm.log_info("{GB Testing}%s",tres_per_node)
+     end
+ --    slurm.log_info("{GB Testing}%s",tres_per_node)  
+ --    
      slurm.log_info("testcluster_job_submit: Job submission evaluation START for %s", username)
  
-     if tres_per_node ~= nil then
-         num_gpus_text=string.match(tres_per_node, ":(.*)")
-         num_gpus_num=tonumber(num_gpus_text)
-         slurm.log_info("testcluster_job_submit: GPUs %u", num_gpus_num)
-     else
-         num_gpus_num = 0
-     end
+ --    if tres_per_node ~= nil then
+ --        num_gpus_text=string.match(tres_per_node, ":(.*)")
+ --        num_gpus_num=tonumber(num_gpus_text)
+ --        slurm.log_info("testcluster_job_submit: GPUs %u", num_gpus_num)
+ --    else
+ --        num_gpus_num = 0
+ --    end
  
      if shared ~= 0 then
          slurm.log_info("testcluster_job_submit: Shared Job")
@@ -137,24 +140,24 @@ function string.starts(String,Start)
      end
  
      -- Partition tests - Ensure that standard/largemem jobs are exclusive and that others request nodes appropriately
-     if partition ~= nil then
-         slurm.log_info("testcluster_job_submit: partition specified %s",partition)
-         if string.find(partition, "gpu") or string.find(partition, "cpu") then
-             -- set job to exclusive for standard and highmem partitions
-             slurm.log_info("testcluster_job_submit: setting job to exclusive for gpu or cpu")
-             job_desc.shared = 0
-         elseif shared ~= 0 and user_spec_nodes == 1 then
-             --  if ask for nodes in serial and not ask --exclusive, then reject.
-             slurm.log_info("testcluster_job_submit: nodes specified and not exclusive. Reject job")
-             slurm.log_user("Job rejected: Nodes specified but the --exclusive flag is not specifed. Please use the --exclusive flag if you need to specify nodes, or specify tasks or cpus(cores) if not.")
-             return slurm.ERROR
-         end
-     else
-         -- Reject jobs that don't specify a partition
-         slurm.log_info("testcluster_job_submit: partition not specified")
-         slurm.log_user("Job rejected: Please specify a partition name.")
-         -- return slurm.ERROR
-     end
+ --    if partition ~= nil then
+ --        slurm.log_info("testcluster_job_submit: partition specified %s",partition)
+ --        if string.find(partition, "gpu") or string.find(partition, "cpu") then
+ --            -- set job to exclusive for standard and highmem partitions
+ --            slurm.log_info("testcluster_job_submit: setting job to exclusive for gpu or cpu")
+ --            job_desc.shared = 0
+ --        elseif shared ~= 0 and user_spec_nodes == 1 then
+ --            --  if ask for nodes in serial and not ask --exclusive, then reject.
+ --            slurm.log_info("testcluster_job_submit: nodes specified and not exclusive. Reject job")
+ --            slurm.log_user("Job rejected: Nodes specified but the --exclusive flag is not specifed. Please use the --exclusive flag if you need to specify nodes, or specify tasks or cpus(cores) if not.")
+ --            return slurm.ERROR
+ --        end
+ --    else
+ --        -- Reject jobs that don't specify a partition
+ --        slurm.log_info("testcluster_job_submit: partition not specified")
+ --        slurm.log_user("Job rejected: Please specify a partition name.")
+ --        -- return slurm.ERROR
+ --    end
  
      -- QoS and time limit tests
      if qos ~= nil then
@@ -208,35 +211,44 @@ function string.starts(String,Start)
      --  If no time specified, then present warning message to user.
      if time_limit == nil or time_limit == 4294967294 then
          slurm.log_info("testcluster_job_submit: No time limit specified")
-         slurm.log_user("Warning: Your job has no time specification (--time=) and the default time is short. You can cancel your job with 'scancel <JOB_ID>' if you wish to resubmit.")
+ 
+     slurm.log_user("Warning: Your job has no time specification (--time=) and the default time is short. You can cancel your job with 'scancel <JOB_ID>' if you wish to resubmit.")
+         slurm.log_info("{GB TESTING} test11")
      end
-     if gres ~= nil then
-         slurm.log_info("{GB TESTING} testcluster_job_submit: job submitted with GRes specified %s. Will be overwritten.", gres)
-     end
+     --if gres ~= nil then
+         --slurm.log_info("{GB TESTING} testcluster_job_submit: job submitted with GRes specified. Will be overwritten.")
+     --end
      if partition ~= nil then
+     slurm.log_info("{GB TESTING} enter partition not nil segment")    
          if string.find(partition, "cpu") then
              if qos ~= nil then
+             slurm.log_info("{GB TESTING} enter qos not nil segment")    
                  if string.find(qos, "standard") then
-                     job_desc.gres = "cpu-standard"
+                     slurm.log_info("{GB TESTING} assign gres=cpu-standard")
+                     job_desc.tres_per_node = "cpu-standard"
+                     slurm.log_info("{GB Testing} assign gres=cpu-standard (end)")
                  elseif string.find(qos, "low") then
-                     job_desc.gres = "cpu-low"
+                     slurm.log_info("{GB Testing} assign gres=cpu-low (start)")
+                     job_desc.tres_per_node = "cpu-low"
+                     slurm.log_info("{GB Testing} assign gres=cpu-low (end)")
                  end
              end
          elseif string.find(partition, "gpu") then
              if qos ~= nil then
+             slurm.log_info("{GB TESTING} enter qos not nil segment")    
                  if string.find(qos, "standard") then
-                     job_desc.gres = "gpu-standard"
+                     slurm.log_info("{GB TESTING} assign gres=gpu-standard")
+                     job_desc.tres_per_node = "gpu-standard"
                  elseif string.find(qos, "low") then
-                     job_desc.gres = "gpu-low"
+                     slurm.log_info("{GB TESTING} assign gres=gpu-low")
+                     job_desc.tres_per_node = "gpu-low"
                  end
              end
          end
      end 
-     job_desc.gres = "cpu-standard"
      
-     slurm.log_info("{GB TESTING} testcluster_job_submit: gres post %s", gres)
      
-     slurm.log_info("{GB TESTING} testcluster_job_submit: job_desc.gres post %s", job_desc.gres)
+     slurm.log_info("{GB TESTING} testcluster_job_submit: job_desc.tres_per_node post=%s", job_desc.tres_per_node)
  
      -- Job has passed all tests. Log submission details and END, return successful to Slurm so it will continue to try and schedule the job.
      slurm.log_info("testcluster_job_submit: user %s, submitted a job %s",
