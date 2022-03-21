@@ -156,8 +156,9 @@
     mode: 0700
     state: directory
 
-- name: Scontrol reconfig 
-  command: scontrol reconfig
+- name: Scontrol reconfigure
+  become: yes 
+  command: scontrol reconfigure
   run_once: true
   when: reconfig_services == true
 
