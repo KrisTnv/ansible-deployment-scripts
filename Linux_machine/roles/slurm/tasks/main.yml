@@ -80,6 +80,19 @@
     - restart_slurmctld
     - restart_slurmd
 
+- name: Slurm | Copy gres.confg file
+  template:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/{{ item }}"
+    owner: slurm
+    group: slurm
+    mode: '0644'
+  with_items:
+    - gres.conf
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
+
 - name: Slurm | Copy job_submit.lua file
   copy:
     src: "{{ item }}"
