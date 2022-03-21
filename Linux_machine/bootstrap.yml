@@ -42,6 +42,17 @@
       shell: /bin/bash
       groups: root
 
+  - name: create test1 user
+    tags: always,test1
+    user:
+      name: test1
+      password: "{{ password | password_hash('sha512') }}"
+      shell: /bin/bash
+      groups: root
+      createhome: yes
+      home: /home/test1
+      system: no
+
   - name: add ssh key for hpcsys
     tags: always
     authorized_key:
