@@ -1,0 +1,2 @@
+#/nfsshare  {{hostvars[inventory_hostname].ansible_default_ipv4.network}}/{{hostvars[inventory_hostname].ansible_default_ipv4.netmask}}(rw,sync,no_root_squash,no_subtree_check)
+192.168.100.152:/nfsshare /mnt/nfsshare nfs default 0 0
