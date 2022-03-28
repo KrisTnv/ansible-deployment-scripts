@@ -36,13 +36,13 @@
 s_hostname=$(hostname)
 
 ## Set the nodes to filter out
-s_login_array=(tursa-login1,tursa-login2,tursa-login3,tursa-login4)
+#s_login_array=(tursa-login1,tursa-login2,tursa-login3,tursa-login4)
 
 ## Check our hostname against the login node array
-if [[ "${s_login_array[@]}" =~ "${s_hostname}" ]]; then
-       	# Nothing to do on a login node so just exit
-        exit 0
-fi
+#if [[ "${s_login_array[@]}" =~ "${s_hostname}" ]]; then
+#       	# Nothing to do on a login node so just exit
+#        exit 0
+#fi
 
 ##
 ## Add the user's group to huge pages
@@ -80,4 +80,3 @@ rm -f $HOME/$$.tmp
 if [ $? -ne 0 ] ; then
         echo "Unable to remove file from $HOME on $HOST"     ; exit 8
 fi
-

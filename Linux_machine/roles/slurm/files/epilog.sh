@@ -1,6 +1,8 @@
 #epilog
 #!/bin/bash
 
+#epilog file is suited for workshop cluster with NO GPU in the cluster
+
 # SLURM eplilog
 # Executed by the root user when a users job finishes
 # Clean tmp directores, kill remaining jobs and clean cache
@@ -20,18 +22,20 @@
 s_hostname=$(hostname)
 
 ## Set the nodes to filter out
-s_login_array=(tursa-login1,tursa-login2,tursa-login3,tursa-login4)
+#s_login_array=(tursa-login1,tursa-login2,tursa-login3,tursa-login4)
+
 
 ## Check our hostname against the login node array
-if [[ "${s_login_array[@]}" =~ "${s_hostname}" ]]; then
-        # Nothing to do on a login node so just exit
-        exit 0
-fi
+#if [[ "${s_login_array[@]}" =~ "${s_hostname}" ]]; then
+#        # Nothing to do on a login node so just exit
+#        exit 0
+#fi
 
 ##
 ## Kill and procs left running on a GPU
 ## Slurm must create the /tmp/GPU${SLURM_JOB_ID}.txt file as part of prolog!
 ##
+
 list_descendants ()
 {
   local children=$(ps -o pid= --ppid "$1")
@@ -80,19 +84,21 @@ date=$(date "+%D %R")
 
 echo $SLURM_JOB_ID,$jobstate$numnodes,$partition,$SLURM_JOB_ACCOUNT,$SLURM_JOB_USER,$runtime,$jobstart,$jobend >> /var/spool/SLURM/jobsummary.txt
 
+
+#We do not have GPU in the workshop cluster to commenting the below
 # Reset GPUs to clear memory remapper error states
-systemctl stop nvidia-persistenced
-systemctl stop dcgm-exporter
-systemctl stop dcgm
-nvidia-smi -r
-systemctl start dcgm
-systemctl start dcgm-exporter
-systemctl start nvidia-persistenced
+#systemctl stop nvidia-persistenced
+#systemctl stop dcgm-exporter
+#systemctl stop dcgm
+#nvidia-smi -r
+#systemctl start dcgm
+#systemctl start dcgm-exporter
+#systemctl start nvidia-persistenced
 
 ##
 ## resets nvidia mode, in case it gets changed
 ## Issue seen on other clysters
 ##
-/usr/bin/nvidia-smi --compute-mode=0
+#/usr/bin/nvidia-smi --compute-mode=0
 
 exit 0
