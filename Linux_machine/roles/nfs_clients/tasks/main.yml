@@ -1,0 +1,24 @@
+---
+
+- name: Ensure NFS common is installed.
+  apt:
+    name: nfs-common
+    state: present
+    update_cache: yes
+
+- name: Create mountable dir
+  file:
+    path: /mnt/nfsshare
+    state: directory
+    mode: 0777
+    owner: root
+    group: root
+
+- name: set mountpoints
+  mount:
+    name: /nfsshare
+    src: 192.168.100.152:/nfsshare
+    path: /mnt/nfsshare
+    fstype: nfs
+    opts: rw,sync,intr,hard,defaults,nobootwait
+    state: present
