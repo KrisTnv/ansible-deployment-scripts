@@ -20,10 +20,9 @@
       - build-essential
     state: present
 
-- name: Slurm | check slurmd is installed
-  service:
-    name: slurmd
-    state: started
+- name: Slurm | Check slurm is installed
+  become: yes
+  stat: path=/etc/systemd/system/slurmd.service
   register: slurm_installed
 
 - name: Slurm | Build & install
