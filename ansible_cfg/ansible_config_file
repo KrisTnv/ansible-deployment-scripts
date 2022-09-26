@@ -8,8 +8,8 @@
 # finds first
 
 [defaults]
-inventory = hosts
+inventory = hosts.ini
 #private_key_file = ~/.ssh/ansible 
 
 #Run playbooks without become password
-remote_user = root/hpc
+remote_user = root/hpcsys

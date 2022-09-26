@@ -1,3 +1,0 @@
-ansible all -m apt -a name={package name} --become --ask-become-pass/ -K
-#update packages
-ansible all -m apt -a "name=snapd state=latest" --become -K 
