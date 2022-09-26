@@ -20,10 +20,16 @@
       - build-essential
     state: present
 
+- name: Slurm | Check slurm is installed
+  become: yes
+  stat: path=/etc/systemd/system/slurmd.service
+  register: slurm_installed
+
 - name: Slurm | Build & install
   shell: "./configure --sysconfdir=/usr/local/etc --prefix=/usr/local && make -j 4 && make install"
   args:
     chdir: /home/{{ deploy_user }}/slurm-20.11.8/
+  when: slurm_installed is failed
 
 - name: Slurm | Copy systemd files
   copy:
@@ -31,30 +37,108 @@
     dest: "/etc/systemd/system/"
     owner: hpcsys
     group: hpcsys
-    remote_src: yes
   loop: 
-    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmd.service"
-    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmctld.service"
-    - "/home/{{ deploy_user }}/slurm-20.11.8/etc/slurmdbd.service"
+    - "/home/{{ deploy_user }}/slurm-service/slurmd.service"
+    - "/home/{{ deploy_user }}/slurm-service/slurmctld.service"
+    - "/home/{{ deploy_user }}/slurm-service/slurmdbd.service"
 
-- name: Slurm | Copy all slurm onfig files
-  become: yes
+- name: Slurm | Copy munge plugins
   copy:
     src: "{{ item }}"
-    dest: "/usr/local/etc/"
+    dest: "/usr/local/lib/slurm/"
+    owner: root
+    group: root
+    mode: 0755
+  loop:
+    - "/home/hpcsys/slurm-20.11.8/src/plugins/auth/munge/.libs/auth_munge.so"
+    - "/home/hpcsys/slurm-20.11.8/src/plugins/cred/munge/.libs/cred_munge.so"
+
+- name: Slurm | Copy slurm config file
+  template:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/{{ item }}"
+    owner: slurm
+    group: slurm 
+    mode: '0644'
+  with_items:
+    - slurm.conf
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
+
+- name: Slurm | Copy slurm partition file
+  template:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/{{ item }}"
     owner: slurm
     group: slurm
-    mode: 0444
-  with_fileglob: "/usr/local/etc/slurm.conf"
+    mode: '0644'
+  with_items:
+    - partition.conf
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
 
-  #- name: generate slurm_config file from template
-  #template:
-  #  src: "{{ slurm_template_file }}"
-  #  dest: /usr/local/etc/slurm.conf
-  #  owner: slurm
-  #  group: slurm
-  #  mode: 0400
-  
+- name: Slurm | Copy gres.confg file
+  template:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/{{ item }}"
+    owner: slurm
+    group: slurm
+    mode: '0644'
+  with_items:
+    - gres.conf
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
+
+- name: Slurm | Copy job_submit.lua file
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/local/etc/{{ item }}"
+    owner: slurm
+    group: slurm
+    mode: '0644'
+  with_items:
+    - job_submit.lua
+  notify:
+    - restart_slurmctld
+    - restart_slurmd
+  when: "'controllers' in group_names"
+
+#- name: Slurm | Copy all slurm config files
+#  become: yes
+#  copy:
+#    src: "{{ item }}"
+#    dest: "/usr/local/etc/"
+#    owner: slurm
+#    group: slurm
+#    mode: 0644
+#  with_fileglob:
+#    - "/usr/local/etc/slurm.conf"
+#    - "/usr/local/etc/partition.conf"
+#  notify:
+#    - restart_slurmctld
+#    - restart_slurmd
+
+- name: Slurm | Create pid directory
+  become: yes
+  file:
+    path: "/var/run/slurm"
+    owner: slurm
+    group: slurm
+    mode: 0700
+    state: directory
+
+- name: Slurm | Create pid file
+  become: yes
+  file:
+    path: "/var/run/slurm/slurmd.pid"
+    owner: slurm
+    group: slurm
+    mode: 0644
+    state: touch
+
 - name: Slurm | Create spool folder
   file:
     path: "/var/spool/slurm"
@@ -70,4 +154,10 @@
     group: slurm
     mode: 0700
     state: directory
+
+- name: Scontrol reconfigure
+  become: yes 
+  command: scontrol reconfigure
+  run_once: true
+  when: reconfig_services == true
 

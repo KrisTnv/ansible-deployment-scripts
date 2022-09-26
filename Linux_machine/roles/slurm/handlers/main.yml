@@ -1,9 +1,9 @@
-- name: restart_slurm
+- name: restart_slurmctld
   service: 
     name: slurmctld
     state: restarted
 
-- name: restart_slurm
+- name: restart_slurmd
   service: 
     name: slurmd
     state: restarted

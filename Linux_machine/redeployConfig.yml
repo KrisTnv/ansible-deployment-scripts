@@ -1,0 +1,5 @@
+- hosts: slurmcompute, dbservers
+  become: true
+  roles: 
+    - slurm
+  

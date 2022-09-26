@@ -73,6 +73,18 @@
      - slurmdbd
    tags: slurmdbd
 
+ - hosts: slurmcompute
+   become: true
+   roles:
+     - nfs_clients
+   tags: nfs_clients
+
+ - hosts: controllers
+   become: true
+   roles:
+     - nfs_server
+   tags: nfs_server
+
  - hosts: slurmtest
    become: true
    roles:
